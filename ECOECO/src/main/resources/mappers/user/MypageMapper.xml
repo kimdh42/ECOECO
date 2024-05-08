@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.recycle.ecoeco.membership.model.dao.user.MypageMapper">
+
+    <resultMap id="myPageBankAccountResultMap" type="com.recycle.ecoeco.accounting.model.dto.BankAccountDTO">
+        <id property="accountNo" column="accountNo"/>
+        <result property="bankName" column="bankName"/>
+    </resultMap>
+
+    <resultMap id="myPageProjectResultMap" type="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO">
+        <id property="projectNo" column="projectNo"/>
+        <result property="projectName" column="projectName"/>
+        <result property="projectStatus" column="projectStatus"/>
+        <result property="projectSorN" column="projectSorN"/>
+        <result property="deliveryYN" column="deliveryYN"/>
+        <result property="serviceCharge" column="serviceCharge"/>
+        <result property="targetAmount" column="targetAmount"/>
+        <result property="requestDate" column="requestDate"/>
+        <result property="approvalDate" column="approvalDate"/>
+        <result property="petitionDate" column="petitionDate"/>
+        <result property="startDate" column="startDate"/>
+        <result property="endDate" column="endDate"/>
+        <result property="achievedAmount" column="achievedAmount"/>
+        <result property="dueDate" column="dueDate"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="categoryCode" column="categoryCode"/>
+        <association property="maker" column="makerNo" resultMap="myPageMakerResultMap"/>
+    </resultMap>
+
+    <resultMap id="myPageMakerResultMap" type="com.recycle.ecoeco.makerProject.model.dto.MakerDTO">
+        <id property="makerNo" column="makerNo"/>
+        <association property="project" column="projectNo" resultMap="myPageProjectResultMap"/>
+        <association property="user" column="userNo" resultMap="myPageUserInfoResultMap"/>
+    </resultMap>
+
+    <resultMap id="myPageUserInfoResultMap" type="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        <id property="userNo" column="userNo"/>
+        <association property="payment" column="paymentNo"/>
+        <association property="order" column="orderNo"/>
+    </resultMap>
+
+    <resultMap id="myPageSettlementResultMap" type="com.recycle.ecoeco.accounting.model.dto.SettlementDTO">
+        <id property="settlementNo" column="settlementNo"/>
+        <association property="maker" column="makerNo" resultMap="myPageMakerResultMap">
+            <result property="userNo" column="userNo"/>
+            <result property="userInfo" column="userNo"/>
+        </association>
+        <association property="project" column="projectNo" resultMap="myPageProjectResultMap">
+            <result property="serviceCharge" column="serviceCharge"/>
+            <result property="endDate" column="endDate"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="myPagePaymentResultMap" type="com.recycle.ecoeco.accounting.model.dto.PaymentDTO">
+        <id property="paymentNo" column="paymentNo"/>
+        <result property="paymentPrice" column="paymentPrice"/>
+        <result property="paymentDate" column="paymentDate"/>
+        <result property="apiPayNo" column="apiPayNo"/>
+        <result property="projectNo" column="projectNo"/>
+        <result property="orderNo" column="orderNo"/>
+        <result property="rewardNo" column="rewardNo"/>
+        <result property="userNo" column="userNo"/>
+        <association property="order" resultMap="myPageOrderResultMap"/>
+        <association property="project" column="projectNo" resultMap="myPageProjectResultMap"/>
+        <association property="orderer" column="userNo" resultMap="myPageUserInfoResultMap">
+            <result property="userName" column="userName"/>
+            <result property="userId" column="userId"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="myPageOrderResultMap" type="com.recycle.ecoeco.accounting.model.dto.OrderDTO">
+        <id property="orderNo" column="orderNo"/>
+        <association property="orderer" column="userNo"/>
+        <association property="project" column="projectNo"/>
+        <association property="reward" column="rewardNo"/>
+    </resultMap>
+
+    <resultMap id="myPageNewsResultMap" type="com.recycle.ecoeco.makerProject.model.dto.NewsDTO">
+        <id property="newsNo" column="newsNo"/>
+        <result property="newsCategory" column="newsCategory"/>
+        <result property="newsTitle" column="newsTitle"/>
+        <result property="newsContent" column="newsContent"/>
+        <result property="newsDate" column="newsDate"/>
+        <result property="newsImage" column="newsImage"/>
+        <result property="projectNo" column="projectNo"/>
+        <result property="userNo" column="userNo"/>
+        <association property="project" column="projectNo"/>
+        <association property="userInfo" column="userNo"/>
+    </resultMap>
+
+    <!-- 아이디 중복 체크 -->
+    <select id="selectUserById" resultType="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        SELECT
+        userId
+        FROM
+        user_info
+        WHERE
+        userId = #{ userId }
+    </select>
+
+    <!-- 회원가입 -->
+    <insert id="joinus" parameterType="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        INSERT INTO
+        user_info
+        (userId, userPwd, userName, userPnum, userEmail, userBirth, userGender, userDate)
+        VALUES
+        (#{ userId }, #{ userPwd }, #{ userName }, #{ userPnum }, #{ userEmail }, #{ userBirth }, #{ userGender }, current_date());
+    </insert>
+
+    <!-- 사용자 정보 조회 -->
+    <select id="findByUserId" resultType="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        SELECT
+        userNo, userId, userPwd, userName, userPnum, userEmail, userBirth, userGender, userGrade, userPoint, userDate, userAccount, userAddress, userRole
+        FROM
+        user_info
+        WHERE
+        userId = #{ userId }
+    </select>
+
+    <!-- 아이디 찾기 -->
+    <select id="findIdByUserNameAndEmail" resultType="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        SELECT
+        userId
+        FROM
+        user_info
+        WHERE
+        userName = #{ userName }
+        AND
+        userEmail = #{ userEmail }
+    </select>
+
+    <!-- 비밀번호 찾기 -->
+    <select id="findPwdByUserIdAndUserEmail" resultType="java.lang.String">
+        SELECT
+        userPwd
+        FROM
+        user_info
+        WHERE
+        userId = #{ userId }
+        AND
+        userEmail = #{ userEmail }
+    </select>
+
+    <!-- 비밀번호 업데이트 -->
+    <update id="updateUserPassword">
+        UPDATE
+        user_info
+        SET
+        userPwd = #{encode}
+        WHERE
+        userId = #{userId}
+    </update>
+    <!-- 내정보 수정 -->
+    <update id="updateUserInfo" parameterType="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        UPDATE user_info
+        <set>
+            <if test="userPwd != null">userPwd = #{userPwd},</if>
+            <if test="userPnum != null">userPnum = #{userPnum},</if>
+            <if test="userEmail != null">userEmail = #{userEmail},</if>
+            <if test="userGender != null">userGender = #{userGender},</if>
+            <if test="userBirth != null">userBirth = #{userBirth},</if>
+        </set>
+        WHERE userId = #{userId}
+    </update>
+
+    <!-- 탈퇴하기 -->
+    <delete id="deleteUserInfo">
+        DELETE FROM
+        user_info
+        WHERE
+        userId = #{ userId }
+    </delete>
+
+    <!-- 프로필 이미지 업로드 -->
+    <insert id="insertUserProfileImage" parameterType="com.recycle.ecoeco.membership.model.dto.UserProfileImageDTO">
+        INSERT INTO user_profile_image (profileImageNo, profileImageFileName, profileImageSaveName, profileImagePath, userNo)
+        VALUES (#{profileImageNo}, #{profileImageFileName}, #{profileImageSaveName}, #{profileImagePath}, #{userNo})
+    </insert>
+
+    <!-- 프로필 이미지 출력 -->
+    <select id="getLatestProfileImage" resultType="com.recycle.ecoeco.membership.model.dto.UserProfileImageDTO">
+        SELECT *
+        FROM
+        user_profile_image
+        WHERE
+        userNo = #{ userNo }
+        ORDER BY
+        profileImageNo DESC LIMIT 1
+    </select>
+
+    <select id="getProjectByUserId" resultMap="myPageProjectResultMap">
+        SELECT
+        p.projectNo, p.projectName, p.projectStatus, p.projectSorN, p.deliveryYN, p.serviceCharge, p.targetAmount, p.requestDate, p.approvalDate, p.petitionDate, p.startDate, p.endDate, p.achievedAmount, p.dueDate, p.categoryCode
+        FROM
+        project p
+        JOIN
+        maker m ON p.projectNo = m.projectNo
+        JOIN
+        user_info u ON m.userNo = u.userNo
+        WHERE
+        userId = #{ userId }
+        ORDER BY
+        projectNo
+    </select>
+
+    <select id="getProjectDetail" resultMap="myPageProjectResultMap">
+        SELECT *
+        FROM
+        project
+        WHERE
+        projectNo = #{projectNo}
+    </select>
+
+    <select id="getPaymentInfo" resultMap="myPagePaymentResultMap">
+        SELECT
+        p.paymentNo,
+        p.paymentPrice,
+        p.paymentDate,
+        p.apiPayNo,
+        p.projectNo,
+        p.orderNo,
+        p.rewardNo,
+        p.userNo,
+        u.userNo,
+        u.userName,
+        u.userId,
+        pr.projectNo
+        FROM
+        payment p
+        LEFT JOIN
+        project pr ON pr.projectNo = p.projectNo
+        LEFT JOIN
+        user_info u ON u.userNo = p.userNo
+        WHERE
+        p.projectNo = #{ projectNo }
+    </select>
+
+    <select id="getSettlementInfo" resultMap="myPageSettlementResultMap">
+        SELECT
+        s.settlementNo,
+        s.settlementStatus,
+        s.settlementPrice,
+        s.settlementDate,
+        s.userNo,
+        s.projectNo,
+        u.userNo,
+        u.userId,
+        u.userName,
+        p.serviceCharge,
+        p.endDate,
+        p.projectNo,
+        m.makerNo,
+        m.makerName,
+        m.userNo
+        FROM
+        settlement s
+        LEFT JOIN
+        user_Info u ON u.userNo = s.userNo
+        LEFT JOIN
+        maker m ON m.userNo = s.userNo
+        LEFT JOIN
+        project p ON s.projectNo = p.projectNo
+        WHERE
+        s.projectNo = #{ projectNo }
+    </select>
+
+    <select id="getSettlementDTO" resultMap="myPageSettlementResultMap">
+        SELECT
+        s.settlementNo,
+        s.settlementStatus,
+        s.settlementPrice,
+        s.settlementDate,
+        s.userNo,
+        s.projectNo,
+        u.userNo,
+        u.userId,
+        u.userName,
+        p.serviceCharge,
+        p.projectNo,
+        m.makerNo,
+        m.makerName,
+        m.userNo
+        FROM
+        settlement s
+        LEFT JOIN
+        maker m ON s.userNo = m.userNo
+        LEFT JOIN
+        user_Info u ON u.userNo = m.userNo
+        LEFT JOIN
+        project p ON s.projectNo = p.projectNo
+        WHERE
+        s.settlementNo = #{ settlementNo }
+    </select>
+
+    <select id="getSupportMyProjectList" resultMap="myPageProjectResultMap">
+        SELECT
+        u.userNo,
+        u.userId,
+        u.userName,
+        p.projectNo,
+        p.projectName,
+        p.projectStatus,
+        p.projectSorN,
+        p.deliveryYN,
+        pa.paymentNo,
+        pa.paymentPrice,
+        pa.projectNo,
+        pa.userNo,
+        o.userNo,
+        o.projectNo,
+        o.paymentStatus,
+        m.makerNo,
+        m.makerName,
+        m.projectNo
+        FROM
+        project p
+        LEFT JOIN
+        payment pa ON pa.projectNo = p.projectNo
+        LEFT JOIN
+        `order` o ON o.userNo = pa.userNo
+        LEFT JOIN
+        user_Info u ON u.userNo = pa.userNo
+        LEFT JOIN
+        maker m ON m.projectNo = p.projectNo
+        WHERE
+        u.userId = #{ userId }
+    </select>
+
+    <select id="getSupportProjectDetail" resultMap="myPageProjectResultMap">
+        SELECT
+        p.*,
+        o.*
+        FROM
+        project p
+        LEFT JOIN
+        `order` o ON o.projectNo = p.projectNo
+        WHERE
+        p.projectNo = #{ projectNo }
+    </select>
+
+    <delete id="refundSupportProject">
+        DELETE FROM
+        `order`
+        WHERE
+        orderNo = #{ orderNo }
+    </delete>
+
+    <insert id="mypageInsertNews" parameterType="com.recycle.ecoeco.makerProject.model.dto.NewsDTO">
+        INSERT INTO
+        news (newsCategory, newsTitle, newsContent, newsDate, projectNo, userNo)
+        VALUES
+        (#{ newsCategory }, #{ newsTitle }, #{ newsContent }, current_date(), #{ projectNo }, #{ userNo })
+    </insert>
+
+    <select id="getNewsList" resultMap="myPageNewsResultMap">
+        SELECT
+            newsNo,
+            newsCategory,
+            newsTitle,
+            newsContent,
+            newsDate,
+            newsImage,
+            projectNo,
+            userNo
+        FROM
+            news
+        WHERE
+            projectNo = #{ projectNo }
+    </select>
+
+    <select id="getRegistNewsDetail" resultMap="myPageNewsResultMap">
+        SELECT
+        newsNo,
+        newsCategory,
+        newsTitle,
+        newsContent,
+        newsDate,
+        newsImage,
+        projectNo,
+        userNo
+        FROM
+        news
+        WHERE
+        newsNo = #{ newsNo }
+    </select>
+
+    <update id="updateNewsDetail">
+        UPDATE
+        news
+        <set>
+            <if test="newsCategory != null">newsCategory = #{newsCategory},</if>
+            <if test="newsTitle != null">newsTitle = #{newsTitle},</if>
+            <if test="newsContent != null">newsContent = #{newsContent},</if>
+            <if test="newsImage != null">newsImage = #{newsImage}</if>
+        </set>
+        WHERE
+        newsNo = #{ newsNo }
+    </update>
+
+    <delete id="mypageDeleteNews" parameterType="com.recycle.ecoeco.makerProject.model.dto.NewsDTO">
+        DELETE FROM
+        news
+        WHERE
+        newsNo = #{ newsNo } AND projectNo = #{ projectNo }
+    </delete>
+
+    <!--    <select id="getInputProductImg" resultType="com.recycle.ecoeco.makerProject.model.dto.MakerProfileDTO">-->
+    <!--        SELECT-->
+    <!--            makerImgNo,-->
+    <!--            makerNo,-->
+    <!--            makerImageFileName,-->
+    <!--            makerImageSaveName,-->
+    <!--            makerImagePath,-->
+    <!--            projectNo-->
+    <!--        FROM-->
+    <!--            maker_prmaker_profileofile-->
+    <!--        WHERE-->
+    <!--            projectNo = #{ projectNo }-->
+    <!--    </select>-->
+</mapper>

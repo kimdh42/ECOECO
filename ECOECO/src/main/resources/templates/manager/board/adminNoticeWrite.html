@@ -1,0 +1,93 @@
+<div th:replace="~{/manager/common/header.html}"></div>
+<div th:replace="~{/manager/common/gnb.html}"></div>
+<link rel="stylesheet" href="/css/manager/adminNotice.css">
+<script src="/js/manager/board/boardEvent.js" type="text/javascript"></script>
+
+<div class="sub_wrap">
+	<aside id="lnb">
+		<ul class="menu">
+			<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+			<li><a href="/manager/project/project_new_list">프로젝트 관리</a></li>
+			<li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+			<li class="btn_sub on">
+				<a href="/manager/board/adminNoticeList">게시판관리</a>
+				<ul class="sub_menu" style="display: block;">
+					<li class="on"><a href="/manager/board/adminNoticeList">공지사항</a></li>
+					<li><a href="/manager/board/adminUsGreenList">우리가그린</a></li>
+				</ul>
+			</li>
+		</ul>
+	</aside>
+	<div class="container clearfix">
+		<div class="content">
+			<div class="list_tit">
+				<h3>공지사항</h3>
+			</div>
+			<div class="write">
+				<form id="boardWriteForm" action="/manager/board/write" method="post" autocomplete="off" enctype="multipart/form-data"
+					  onsubmit='return validateForm()'>
+					<table>
+						<caption>게시글 등록</caption>
+
+						<tbody>
+						<tr>
+							<th scope="row">분류</th>
+							<td>
+								<select name="noticeCategory" id="noticeCategory">
+									<option value="" disabled selected>선택</option>
+									<option value="공지사항">공지사항</option>
+									<option value="FAQ">FAQ</option>
+									<option value="이벤트">이벤트</option>
+								</select>
+							</td>
+							<th scope="row">소분류</th>
+							<td>
+								<select name="noticeSubCategory" id="noticeSubCategory">
+									<option value="" disabled selected>선택</option>
+									<option value="메이커">메이커</option>
+									<option value="서포터">서포터</option>
+								</select>
+							</td>
+						</tr>
+
+						<tr>
+							<th scope="row">제목</th>
+							<td colspan="3">
+								<input type="text" name="noticeTitle" placeholder="제목 입력" required>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">내용</th>
+							<td colspan="3">
+								<textarea name="noticeDetail" required></textarea>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">파일첨부</th>
+							<td colspan="3">
+								<div class="file_area">
+									<div class="img_type01">
+										<p>
+											<input type="text" id="file_name_display" title="파일 등록" readonly>
+										</p>
+										<input type="file" id="file_type01" name="singleFile" onchange="displayFileNames(this);">
+										<label for="file_type01" class="btn_file">파일찾기</label>
+									</div>
+								</div>
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					<div class="write_btn align_c mt35">
+						<button type="submit" class="btn btn_modify bg_skincolor">등록</button>
+						<button type="button" class="btn" onclick="history.back()">목록</button>
+						<button type="reset" class="btn btn_del">초기화</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</body>
+</html>

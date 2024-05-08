@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recycle.ecoeco.accounting.model.dao.manager.AdminOrderMapper">
+
+    <resultMap id="orderResultMap" type="com.recycle.ecoeco.accounting.model.dto.OrderDTO">
+        <id property="orderNo" column="orderNo"/>
+        <association property="orderer" resultMap="userInfoResultMap"/>
+        <association property="reward" resultMap="rewardResultMap"/>
+    </resultMap>
+
+    <resultMap id="userInfoResultMap" type="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        <id property="userNo" column="userNo"/>
+    </resultMap>
+
+    <resultMap id="rewardResultMap" type="com.recycle.ecoeco.makerProject.model.dto.RewardDTO">
+        <id property="rewardNo" column="rewardNo"/>
+        <association property="project" resultMap="projectResultMap"/>
+    </resultMap>
+
+    <resultMap id="projectResultMap" type="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO">
+        <id property="projectNo" column="projectNo"/>
+
+    </resultMap>
+
+    <!-- 프로젝트 신규 리스트 토탈 카운트 -->
+    <select id="selectTotalCount" resultType="_int" parameterType="hashmap">
+        SELECT
+        COUNT(*)
+        FROM
+        `order` A
+        <!--        <if test="searchCondition == 'categoryName'">-->
+        <!--            JOIN-->
+        <!--            CATEGORY C ON(A.categoryCode = C.categoryCode)-->
+        <!--        </if>-->
+        <!--        <where>-->
+        <!--            <if test="searchCondition == 'projectNo'">-->
+        <!--                A.projectNo = #{ searchValue }-->
+        <!--            </if>-->
+        <!--            <if test="searchCondition == 'projectName'">-->
+        <!--                A.projectName LIKE CONCAT('%', #{ searchValue }, '%')-->
+        <!--            </if>-->
+        <!--            <if test="searchCondition == 'categoryName'">-->
+        <!--                C.categoryName LIKE CONCAT('%', #{ searchValue }, '%')-->
+        <!--            </if>-->
+        <!--            <if test="searchCondition == 'projectStatus'">-->
+        <!--                A.projectStatus = #{ searchValue }-->
+        <!--            </if>-->
+        <!--            <if test="searchConditionDate == 'requestDate'">-->
+        <!--                <choose>-->
+        <!--                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">-->
+        <!--                        A.requestDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }-->
+        <!--                    </when>-->
+        <!--                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">-->
+        <!--                        <![CDATA[ A.requestDate >= #{ searchDate1 } ]]>-->
+        <!--                    </when>-->
+        <!--                    <otherwise>-->
+        <!--                        <![CDATA[ A.requestDate <= #{ searchDate2 } ]]>-->
+        <!--                    </otherwise>-->
+        <!--                </choose>-->
+        <!--            </if>-->
+        <!--            <if test="searchConditionDate == 'approvalDate'">-->
+        <!--                <choose>-->
+        <!--                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">-->
+        <!--                        A.approvalDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }-->
+        <!--                    </when>-->
+        <!--                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">-->
+        <!--                        <![CDATA[ A.approvalDate >= #{ searchDate1 } ]]>-->
+        <!--                    </when>-->
+        <!--                    <otherwise>-->
+        <!--                        <![CDATA[ A.approvalDate <= #{ searchDate2 } ]]>-->
+        <!--                    </otherwise>-->
+        <!--                </choose>-->
+        <!--            </if>-->
+        <!--            <if test="searchConditionDate == 'startDate'">-->
+        <!--                <choose>-->
+        <!--                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">-->
+        <!--                        A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }-->
+        <!--                    </when>-->
+        <!--                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">-->
+        <!--                        <![CDATA[ A.startDate >= #{ searchDate1 } ]]>-->
+        <!--                    </when>-->
+        <!--                    <otherwise>-->
+        <!--                        <![CDATA[ A.startDate <= #{ searchDate2 } ]]>-->
+        <!--                    </otherwise>-->
+        <!--                </choose>-->
+        <!--            </if>-->
+        <!--            &lt;!&ndash;            <if test="searchConditionDate == 'requestDate' and searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                A.requestDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </if>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            <if test="(searchConditionDate == 'requestDate' and searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchConditionDate == 'requestDate' and searchDate1 != '' and searchDate1 != null and searchDate2 != null)">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <![CDATA[ A.requestDate >= #{ searchDate1 } ]]>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </if>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            <if test="(searchConditionDate == 'requestDate' and searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchConditionDate == 'requestDate' and searchDate2 != '' and searchDate2 != null and searchDate1 != null)">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                <![CDATA[ A.requestDate <= #{ searchDate2 } ]]>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </if>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            <if test="searchConditionDate == 'approvalDate'">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                A.approvalDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </if>&ndash;&gt;-->
+        <!--            &lt;!&ndash;            <if test="searchConditionDate == 'startDate'">&ndash;&gt;-->
+        <!--            &lt;!&ndash;                A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }&ndash;&gt;-->
+        <!--            &lt;!&ndash;            </if>&ndash;&gt;-->
+        <!--            AND A.projectStatus in ('2','3','4')-->
+        <!--        </where>-->
+    </select>
+
+    <select id="findorderList" resultMap="orderResultMap">
+        SELECT
+        orderNo,
+        orderPrice,
+        orderStatus,
+        orderCategory,
+        paymentCategory,
+        paymentStatus,
+        orderDate,
+        buyerName,
+        buyerTel,
+        buyerAddr,
+        buyerAccount,
+        userNo,
+        projectNo,
+        rewardNo,
+        accountNo
+        FROM
+        `ORDER`
+        ORDER BY
+        orderNo DESC
+        LIMIT #{offset}, #{limit};
+    </select>
+
+    <select id="orderListDetail" resultMap="orderResultMap">
+        SELECT
+        o.orderNo,
+        o.orderPrice,
+        o.orderStatus,
+        o.orderCategory,
+        o.paymentCategory,
+        o.paymentStatus,
+        o.orderDate,
+        o.buyerName,
+        o.buyerTel,
+        o.buyerAddr,
+        o.buyerAccount,
+        o.userNo,
+        u.userName,
+        u.userId,
+        p.projectName,
+        r.rewardName,
+        r.rewardPrice
+        FROM
+        `ORDER` o
+        LEFT JOIN
+        REWARD r ON o.rewardNo = r.rewardNo
+        LEFT JOIN
+        USER_INFO u ON o.userNo = u.userNo
+        LEFT JOIN
+        PROJECT p ON o.projectNo = p.projectNo
+        WHERE
+        o.orderNo = #{ORDERNo};
+
+    </select>
+</mapper>

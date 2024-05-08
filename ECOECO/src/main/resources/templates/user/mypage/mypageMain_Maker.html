@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypageMain_Maker</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 35%; height: 850px;">
+        <div class="myprofile_activity">
+            <h3>나의 활동</h3>
+            <br><br>
+            <p class="myProject" onclick="location.href='/user/mypage/mypage_MyprojectList'" style="cursor: pointer">나의 프로젝트</p>
+            <!--                <p class="buyProject" onclick="location.href='8_mypage_SupportProject.html'" style="cursor: pointer">후원한 프로젝트</p>-->
+        </div>
+    </div>
+    <div style="float: left; width: 35%; height: 850px;">
+        <div class="myprofile_info">
+            <h3>내 정보</h3>
+            <br><br>
+            <p class="serchMyinfo" onclick="location.href='/user/mypage/mypage_CheckMyInfo'" style="cursor: pointer">내정보 조회</p>
+            <!--                <p class="delivery" onclick="location.href=''">배송정보</p>-->
+        </div>
+    </div>
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프로젝트 작성</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/sub/projectInfo/projectInfo.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+<body>
+
+<div th:replace="~{/user/common/header.html::header}"></div>
+
+<div id="wrap">
+
+    <div class="subwrap">
+        <aside>
+            <div class="sticky-area">
+                <ul>
+                    <li><a href="/user/project/projectInfo/projectInfo">프로젝트 작성</a></li>
+                    <li><a href="/user/project/maker/maker">메이커 정보</a></li>
+                    <li><a href="/user/project/reward/reward">리워드 설계</a></li>
+                    <li><a href="/user/project/story/story">스토리 정보</a></li>
+                </ul>
+            </div>
+        </aside>
+        <main>
+            <form method="post"  enctype="multipart/form-data" action="/user/project/registProjectInfo">
+                <div class="select-category box">
+                    <div class="left-area">
+                        <p class="p-title">프로젝트 카테고리</p>
+                        <p class="p-sub">
+                            카테고리를 선택해 주세요
+                        </p>
+                    </div>
+                    <div class="right-area">
+                        <!-- cate-area : cate버튼 누를시 리스트 나오면서 공간 늘 -->
+                        <div class="cate-area">
+                            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="categoryCode" id="categorySelect">
+                                <option selected>카테고리 선택</option>
+                                <option value="1">리빙</option>
+                                <option value="2">가전</option>
+                                <option value="3">뷰티</option>
+                                <option value="4">의류</option>
+                                <option value="5">잡화</option>
+                                <option value="6">굿즈</option>
+                                <option value="7">영화/공연</option>
+                                <option value="8">기타</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="serviec-pee box">
+                    <div class="left-area">
+                        <p class="p-title">서비스요금</p>
+                        <p class="p-sub">
+                            요금제를 선택해주세요
+                        </p>
+                    </div>
+                    <div class="right-area">
+                        <select name="serviceCharge" class="form-select form-select-lg mb-3 cateList" aria-label=".form-select-lg example" id="serviceCharge">
+                            <option selected> 서비스 요금제 선택 </option>
+                            <option value="10">요금제 1 (수수료 10%)</option>
+                            <option value="15">요금제 2 (수수료 15%)</option>
+                            <option value="20">요금제 3 (수수료 20%)</option>
+                            <!-- 서비스 요금 부분 보낼때 int형으로 변환하는 로직 필요할듯 -->
+                        </select>
+                    </div>
+                </div>
+                <div class="project-date box">
+                    <div class="left-area">
+                        <p class="p-title">프로젝트 날짜</p>
+                        <p class="p-sub">
+                            시작날짜와 종료날짜를 지정해 주세요
+                        </p>
+                    </div>
+                    <div class="right-area">
+
+                        <p>시작날짜</p>
+                        <input type="date" name="startDate" id="startDate"
+                               data-placeholder="시작 날짜 선택">
+                        <p>종료날짜</p>
+                        <input type="date" name="endDate" id="endDate"
+                               data-placeholder="종료 선택">
+
+
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="left-area">
+                        <p class="p-title">목표 금액</p>
+                        <p class="p-sub">
+                            목표 금액을 입력해주세요.
+                        </p>
+                    </div>
+                    <div class="right-area">
+
+                        <div class="targetSum inputArea">
+                            <input type="text" placeholder="목표 금액을 입력해주세요" name="targetAmount">
+                        </div>
+
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="left-area">
+                        <p class="p-title">배송 여부</p>
+                        <p class="p-sub">
+                            배송 여부를 선택해주세요
+                        </p>
+                    </div>
+                    <div class="right-area">
+
+                        <div class="express-btn">
+                            <input type="radio" id="radio1" class="delivery-option" name="deliveryYN" value="Y">
+                            <label for="radio1">배송✔</label>
+                            <input type="radio" id="radio2" class="delivery-option" name="deliveryYN" value="N">
+                            <label for="radio2">배송안함✔</label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="left-area">
+                        <p class="p-title">프로젝트 제목</p>
+                        <p class="p-sub">
+                            프로젝트 제목을 입력해주세요.
+                        </p>
+                    </div>
+                    <div class="right-area">
+
+                        <div class="title inputArea">
+                            <input type="text" placeholder="제목을 입력해주세요" name="projectName" id="title">
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="left-area">
+                        <p class="p-title">프로젝트 썸네일</p>
+                        <p class="p-sub">
+                            와디즈 및 포털 검색 결과, SNS 타겟 광고 등에 노출할 대표 이미지를 등록해 주세요.
+                        </p>
+                    </div>
+                    <div class="right-area">
+
+                        <!--                        <div class="thumbnail selectBtn">-->
+                        <!--                            <span>썸네일</span>-->
+
+                        <!--                        </div>-->
+                        <input type="file" name="projectThumbnail" accept="image/*" id="projectImg">
+
+                    </div>
+                </div>
+                <div class="saveBtn-area">
+                    <button class="saveBtn"  style="font-weight: bold; font-size: large; color: white;">저장하기</button>
+                </div>
+            </form>
+        </main>
+    </div>
+</div>
+<div th:replace="~{/user/common/footer.html}"></div>
+
+<script src="/js/user/common/header.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+
+    // const saveBtn = document.querySelector('.saveBtn');
+    // const categorySelect = document.querySelector('#categorySelect').value;
+    // const serviceCharge = document.querySelector('#serviceCharge').value;
+    //
+    // saveBtn.addEventListener('click',function (e){
+    //     if(categorySelect === -1){
+    //         window.alert("카테고리를 선택해 주세요");
+    //         console.log(categorySelect);
+    //         e.preventDefault();
+    //     }
+    //
+    //     if(serviceCharge === -1){
+    //         window.alert("서비스 요금제를 선택해 주세요");
+    //         e.preventDefault();
+    //     }
+    // })
+
+
+
+
+
+</script>
+</body>
+</html>

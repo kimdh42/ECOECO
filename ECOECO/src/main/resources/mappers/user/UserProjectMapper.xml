@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recycle.ecoeco.makerProject.model.dao.user.UserProjectMapper">
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO" id="projectResultMap">
+        <id property="projectNo" column="projectNo"/>
+        <association property="maker" resultMap="makerResultMap"></association>
+        <association property="story" resultMap="storyResultMap"></association>
+        <association property="reward" resultMap="rewardResultMap"></association>
+        <association property="projectThumbnailDTO" resultMap="projectThumbnailResultMap"></association>
+    </resultMap>
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ProjectThumbnailDTO" id="projectThumbnailResultMap">
+        <id property="projectImgNo" column="projectImgNo"/>
+    </resultMap>
+
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.CategoryDTO" id="categoryResultMap">
+        <id property="categoryCode" column="categoryCode"/>
+    </resultMap>
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.RewardDTO" id="rewardResultMap">
+        <id property="rewardNo" column="rewardNo"/>
+    </resultMap>
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.StoryDTO" id="storyResultMap">
+        <id property="storyNo" column="storyNo"/>
+        <association property="storyRepImg" resultMap="StoryRepImgResultMap"></association>
+    </resultMap>
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.StoryRepImgDTO" id="StoryRepImgResultMap">
+        <id property="storyNo" column="storyNo"/>
+    </resultMap>
+
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.MakerDTO" id="makerResultMap">
+        <id property="makerNo" column="makerNo"/>
+        <association property="makerProfileDTOList" resultMap="MakerProfileResultMap"></association>
+    </resultMap>
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.MakerProfileDTO" id="MakerProfileResultMap">
+        <id property="makerImgNo" column="makerImgNo"/>
+    </resultMap>
+
+
+
+    <!--프로젝트 생성 insert-->
+    <insert id="registProjectInfo" parameterType="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO">
+        INSERT INTO PROJECT(projectName, projectStatus, deliveryYN, serviceCharge, targetAmount, startDate, endDate, categoryCode, requestDate)
+        values(#{projectName}, 2, #{deliveryYN}, #{serviceCharge}, #{targetAmount}, #{startDate}, #{endDate}, #{categoryCode}, current_date)
+        <selectKey keyProperty="projectNo" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <select id="inquiryProjectInfo" resultMap="projectResultMap">
+        SELECT
+            P.projectNo,
+            P.projectName,
+            P.achievedAmount,
+            P.targetAmount,
+            P.startDate,
+            P.endDate,
+            P.categoryCode,
+            M.makerName,
+            R.rewardNo,
+            rep.storyImageSaveName,
+            rep.storyImagePath,
+            S.storyInfo,
+            S.storySummary
+        FROM PROJECT P
+                 LEFT JOIN  MAKER M on P.projectNo = M.projectNo
+                 LEFT JOIN STORY S on P.projectNo = S.projectNo
+                 LEFT JOIN STORY_REP_IMG rep on s.storyNo = rep.storyNo
+                 LEFT JOIN REWARD R on P.projectNo = R.projectNo
+        where P.projectNo = #{projectNo};
+    </select>
+
+
+    <insert id="registProjectThumbnail" parameterType="com.recycle.ecoeco.makerProject.model.dto.ProjectThumbnailDTO">
+        INSERT INTO project_thumbnail (projectNo, projectImageFileName, projectImageSaveName, projectImagePath)
+        values (#{projectNo}, #{projectImageFileName}, #{projectImageSaveName}, #{projectImagePath})
+    </insert>
+
+    <!--메이커 등록 -->
+    <insert id="registMakerInfo" parameterType="com.recycle.ecoeco.makerProject.model.dto.MakerDTO">
+        INSERT INTO MAKER(makerName, email, phone, projectNo, userNo)
+        values(#{makerName}, #{email}, #{phone} ,#{projectNo} ,#{userNo})
+        <selectKey keyProperty="makerNo" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+    <!--    메이커 프로필-->
+    <insert id="registMakerProfileInfo" parameterType="com.recycle.ecoeco.makerProject.model.dto.MakerProfileDTO">
+        INSERT INTO maker_profile (makerNo, projectNo,makerImageFileName, makerImageSaveName, makerImagePath)
+        values (#{makerNo}, #{projectNo},#{makerImageFileName}, #{makerImageSaveName}, #{makerImagePath})
+    </insert>
+
+
+    <!--리워드 삽입-->
+    <insert id="registRewardInfo" parameterType="com.recycle.ecoeco.makerProject.model.dto.RewardDTO" useGeneratedKeys="true" keyProperty="rewardNo">
+        INSERT INTO REWARD(rewardName, rewardPrice, rewardInfo, projectNo)
+        values (#{rewardName}, #{rewardPrice}, #{rewardInfo}, #{projectNo})
+    </insert>
+
+    <!--리워드 조회-->
+    <select id="getAllRewards" resultMap="rewardResultMap">
+        SELECT
+            rewardNo
+             ,rewardName
+             ,rewardPrice
+             ,rewardInfo
+             ,projectNo
+        FROM
+            REWARD
+        WHERE
+            projectNo = #{projectNo}
+    </select>
+
+    <!--리워드 삭제-->
+    <delete id="deleteReward" parameterType="_int">
+        DELETE FROM reward
+        WHERE rewardNo = #{rewardNo}
+    </delete>
+    <!--리워드 삭제 테스트-->
+    <!--    <select id="countRewardByRewardNo" resultMap="rewardResultMap">-->
+    <!--                SELECT COUNT(*) FROM reward WHERE rewardNo = #{rewardNo}-->
+    <!--    </select>-->
+
+    <!--  스토리 등록  -->
+    <!--    <insert id="registStoryInfo" parameterType="com.recycle.ecoeco.makerProject.model.dto.StoryDTO">-->
+    <!--        INSERT INTO story (storyNo, storySummary, storyInfo, projectNo)-->
+    <!--        SELECT #{storyNo}, #{storySummary}, #{storyInfo}, p.projectNo-->
+    <!--        FROM project p-->
+    <!--        JOIN story s ON p.projectNo = s.projectNo-->
+    <!--        WHERE p.projectNo = #{projectNo}-->
+
+    <!--        <selectKey keyProperty="projectNo" resultType="int" order="AFTER">-->
+    <!--            SELECT LAST_INSERT_ID() AS projectNo-->
+    <!--        </selectKey>-->
+    <!--    </insert>-->
+
+    <insert id="registStoryInfo" parameterType="com.recycle.ecoeco.makerProject.model.dto.StoryDTO">
+        INSERT INTO story (storySummary, storyInfo, projectNo)
+        VALUES (#{storySummary}, #{storyInfo}, #{projectNo})
+
+        <selectKey keyProperty="storyNo" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+
+
+
+    <!--  스토리 이미지 등록  -->
+    <insert id="registStoryRepImage" parameterType="com.recycle.ecoeco.makerProject.model.dto.StoryRepImgDTO">
+        INSERT INTO story_rep_img (storyNo, storyImageFileName, storyImageSaveName, storyImagePath)
+        values (#{storyNo}, #{storyImageFileName}, #{storyImageSaveName}, #{storyImagePath})
+        <!--        <selectKey keyProperty="projectNo" resultType="int" order="AFTER">-->
+        <!--            SELECT LAST_INSERT_ID() AS projectNo-->
+        <!--        </selectKey>-->
+    </insert>
+</mapper>

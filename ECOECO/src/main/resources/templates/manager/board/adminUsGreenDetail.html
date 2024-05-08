@@ -1,0 +1,98 @@
+<div th:replace="~{/manager/common/header.html}"></div>
+<div th:replace="~{/manager/common/gnb.html}"></div>
+<script src="/js/manager/board/boardEvent.js" type="text/javascript"></script>
+
+<div class="sub_wrap">
+    <aside id="lnb">
+        <ul class="menu">
+            <li><a href="/manager/customer/customer_list">회원 관리</a></li>
+            <li><a href="/manager/project/project_new_list">프로젝트 관리</a></li>
+            <li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+            <li class="btn_sub on">
+                <a href="/manager/board/adminNoticeList">게시판관리</a>
+                <ul class="sub_menu" style="display: block;">
+                    <li><a href="/manager/board/adminNoticeList">공지사항</a></li>
+                    <li class="on"><a href="/manager/board/adminUsGreenList">우리가그린</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+    <div class="container clearfix">
+        <div class="content">
+
+            <div class="list_tit">
+                <h3>우리가그린</h3>
+            </div>
+            <div class="list">
+                <div class="search_wrap">
+                    <div class="scrollable">
+                        <table class="search_list">
+                            <caption>상세보기</caption>
+                            <colgroup>
+                                <col>
+                                <col>
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th scope="col">번호</th>
+                                <th scope="col">분류</th>
+                                <th scope="col">작성일</th>
+                                <th scope="col">작성자</th>
+                            </tr>
+                            </thead>
+                            <tbody class="td_bcw">
+                            <tr th:each="usGreen : ${usGreenDetail}">
+                                <td th:text="${usGreen.comuNo}"></td>
+                                <td th:text="${usGreen.comuCategory}"></td>
+                                <td th:text="${usGreen.comuDate}"></td>
+                                <td th:text="${usGreen.writer.userName}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br><br>
+                        <table class="search_list">
+                            <caption>상세보기</caption>
+                            <thead>
+                            <tr>
+                                <th scope="col">제목</th>
+                            </tr>
+                            </thead>
+                            <tbody class="td_bcw">
+                            <tr>
+                                <td th:text="${usGreenDetail.comuTitle}"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br><br>
+                        <table class="search_list">
+                            <caption>상세보기</caption>
+                            <thead>
+                            <tr>
+                                <th scope="col">내용</th>
+                            </tr>
+                            </thead>
+                            <tbody class="td_bcw">
+                            <tr>
+                                <td th:text="${ usGreenDetail.comuDetail }"></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <br><br><br>
+                    </div>
+
+                    <div class="write nshadow" th:if="${usGreenDetail != null}">
+                        <div th:each="usGreen : ${usGreenDetail}">
+                            <div class="write_btn align_c mt35">
+                                <button class="btn" th:onclick="|location.href='/manager/board/adminUsGreenList'|">목록</button>
+                                <button class="btn btn_del" th:onclick="'deleteUsGreen(' + ${usGreen.comuNo} + ')'">삭제</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</body>
+</html>

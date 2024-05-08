@@ -1,0 +1,96 @@
+.container {
+    display: flex;
+    justify-content: center;
+}
+
+.contents_wrap{
+    max-width: 1440px;
+}
+
+/* 총 결제금액 박스 */
+.border {
+    border-color: rgb(172, 172, 172);
+    border-width: 2px;
+    border-radius: 10px;
+    width: 500px;
+    height: 300px;
+    border-style: solid;
+    border-bottom: 1px solid rgb(70, 70, 70);
+    padding: 0 30px 30px 30px;
+}
+/* 할인금액 텍스트 */
+.discount {
+    border-bottom: 1px solid rgb(172, 172, 172);
+    padding-bottom: 30px;
+}
+/* 예약결제 */
+.prepayment {
+    width: 100px; /* 네모난 객체의 너비 */
+    height: 100px; /* 네모난 객체의 높이 */
+    /*background-color: #777777; !* 배경색 설정 *!*/
+    position: absolute; /* 절대 위치 설정 */
+    top: 50%; /* 상단 위치 */
+    left: 50%; /* 왼쪽 위치 */
+    transform: translate(-50%, -50%); /* 가운데 정렬 */
+    z-index: -1; /* 버튼 뒤에 배치하기 위해 z-index 설정 */
+}
+/* 상품 썸네일 */
+.purchase_info img {
+    width: 300px;
+    height: auto;
+}
+/* 펀딩 후원 정보 텍스트 */
+.text1 {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+/* 리워드 셀렉트 박스 */
+.selection_box {
+    text-align: center;
+    padding-left: 10px;
+}
+#deliveryInfo {
+    margin-top: 50px;
+}
+#bankInfo {
+    margin-top: 50px;
+}
+.hidden{
+    display: none;
+}
+#rewardNo {
+    margin-bottom: 60px;
+}
+.button-container {
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+#paymentCategoryKakao img{
+    baseline-shift: super;
+}
+#paymentCategoryPreText{
+    padding: 4px 7px;
+    border: 1px solid #8f8f8f;
+    border-radius: 15px;
+    vertical-align: super;
+}
+.payment-button{
+    display:inline-block;
+    vertical-align:middle;
+    border:0;
+    background-color:#009688;
+    color:#fff;
+    border-radius:3px;
+    height:36px;
+    width:120px;
+}
+.cancel-button{
+    display:inline-block;
+    vertical-align:middle;
+    border:0;
+    background-color:#535353;
+    color:#fff;
+    border-radius:3px;
+    height:36px;
+    width:120px;
+}

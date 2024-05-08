@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/main/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}"/>
+    <script th:src="@{/js/main/user/header.js}"></script>
+    <title>category 페이지</title>
+</head>
+<body>
+<div th:replace="~{/user/common/header::header}"></div>
+<div class="container">
+    <h3 th:if="${#strings.equals(category, 1)}" class="categoryTitle">리빙</h3>
+    <h3 th:if="${#strings.equals(category, 2)}" class="categoryTitle">가전</h3>
+    <h3 th:if="${#strings.equals(category, 3)}" class="categoryTitle">뷰티</h3>
+    <h3 th:if="${#strings.equals(category, 4)}" class="categoryTitle">의류</h3>
+    <h3 th:if="${#strings.equals(category, 5)}" class="categoryTitle">잡화</h3>
+    <h3 th:if="${#strings.equals(category, 6)}" class="categoryTitle">굿즈</h3>
+    <h3 th:if="${#strings.equals(category, 7)}" class="categoryTitle">영화/공연</h3>
+    <h3 th:if="${#strings.equals(category, 8)}" class="categoryTitle">기타</h3>
+
+    <div th:if="${#strings.equals(category, 1)}" class="categoryLists">
+        <div class="item" th:each="project : ${ livingList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 2)}" class="categoryLists">
+        <div class="item" th:each="project : ${ applianceList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 3)}" class="categoryLists">
+        <div class="item" th:each="project : ${ beautyList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 4)}" class="categoryLists">
+        <div class="item" th:each="project : ${ clothingList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 5)}" class="categoryLists">
+        <div class="item" th:each="project : ${ generalItemsList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 6)}" class="categoryLists">
+        <div class="item" th:each="project : ${ goodsList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 7)}" class="categoryLists">
+        <div class="item" th:each="project : ${ entertainmentList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(category, 8)}" class="categoryLists">
+        <div class="item" th:each="project : ${ otherList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+    <div th:replace="/user/common/footer.html"></div>
+</div>
+</body>
+</html>

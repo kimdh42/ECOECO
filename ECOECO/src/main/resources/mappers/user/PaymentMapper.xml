@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.recycle.ecoeco.accounting.model.dao.PaymentMapper">
+
+<!-- 주문 페이지 리워드 리스트-->
+    <select id="findRewardList" resultType="com.recycle.ecoeco.makerProject.model.dto.RewardDTO">
+    SELECT
+        rewardNo,
+        rewardName,
+        rewardPrice,
+        rewardInfo,
+        projectNo
+    FROM
+        REWARD
+    WHERE
+        projectNo = #{projectNo}
+    ORDER BY
+        rewardNo
+    </select>
+
+    <!--주문 페이지 은행 리스트-->
+    <select id="findBankList" resultType="com.recycle.ecoeco.accounting.model.dto.BankAccountDTO">
+        SELECT
+            accountNo,
+            bankName
+        FROM
+            BANK_ACCOUNT
+        ORDER BY
+            accountNo
+    </select>
+
+    <!-- 주문 페이지 주문자 정보 -->
+    <select id="findBuyerList" resultType="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        SELECT
+            userName,
+            userPnum,
+            userAddress,
+            userAccount,
+            accountNo
+        FROM
+            USER_INFO
+        WHERE
+            userNo = #{userNo}
+    </select>
+
+    <!--주문 페이지 배송상품 프로젝트 여부-->
+    <select id="findProjectList" resultType="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO">
+        SELECT
+            deliveryYN,
+            projectName
+        FROM
+            PROJECT
+        WHERE
+            projectNo = #{ projectNo }
+    </select>
+
+    <!-- 주문 등록 -->
+    <insert id="registOrder">
+        INSERT INTO
+            `ORDER`
+            ( orderPrice, orderStatus, orderCategory, paymentCategory, buyerName, buyerTel, buyerAddr, buyerAccount, userNo, projectNo, rewardNo, accountNo)
+        VALUES
+            ( #{ orderPrice }, '주문완료', #{ orderCategory }, #{ paymentCategory }, #{ buyerName }, #{ buyerTel }, #{ buyerAddr }, #{ buyerAccount }, #{ userNo }, #{ projectNo }, #{ rewardNo }, #{ accountNo })
+        <selectKey keyProperty="orderNo" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+    </insert>
+
+    <!-- 결제 등록 -->
+    <insert id="registPayment">
+        INSERT INTO
+            PAYMENT
+        ( paymentPrice, paymentDate, apiPayNo, projectNo, orderNo, rewardNo, userNo)
+            VALUES
+        ( #{ paymentPrice }, now(), #{ apiPayNo }, #{ projectNo }, #{ orderNo }, #{ rewardNo }, #{ userNo })
+    </insert>
+
+</mapper>

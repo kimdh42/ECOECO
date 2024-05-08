@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>mypage_SideBar</title>
+
+
+
+</head>
+<body>
+
+        <div class="mypageSM" style="float: left; width: 30%; height: 900px">
+            <!-- 서포터 메이커 마이페이지 이동 버튼-->
+            <div class="toggleButton">
+                <button id="supporterButton" onclick="location.href='/user/mypage/mypageMain'">서포터</button>
+                <button id="makerButton" onclick="location.href='/user/mypage/mypageMain_Maker'">메이커</button>
+            </div>
+
+            <form id="profileImageForm">
+            <!-- 프로필 사진 -->
+                <div class="profileImg">
+                    <div class="sideBarProfileImg">
+<!--                        <img id="previewImage" class="inputProfileImage" src="/images/user/mypage/myPageProfile02.png" alt="프로필 사진">-->
+                        <img id="sideBar_previewImage" class="inputProfileImage" alt="프로필 사진">
+                        <img id="sideBar_previewImage2" class="inputProfileImage2" src="/images/user/mypage/myPageProfile02.png" alt="프로필 사진">
+<!--                        <img id="sideBar_previewImage" src="" alt="Latest Profile Image">-->
+                    </div>
+                </div>
+            </form>
+            <!-- 포인트 -->
+            <div class="pointBox">
+<!--                <input type="text" name="point" id="point" value="여기에 회원 포인트 들어감">-->
+            </div>
+        </div>
+
+<!--        <script type="text/javascript" th:src="@{/js/user/mypage/checkMyInfo.js}"></script>-->
+
+        <script>
+            fetch('/user/mypage/latest-profile-image?userNo=3') // userNo 값을 적절한 값으로 변경하세요.
+                .then(response => response.text())
+                .then(imageUrl => {
+                    const sideBar_previewImage = document.getElementById('sideBar_previewImage');
+                    const sideBar_previewImage2 = document.getElementById('sideBar_previewImage2');
+
+                    if (sideBar_previewImage && sideBar_previewImage2) {
+                        if (imageUrl) {
+                            // 이미지가 존재하는 경우
+                            sideBar_previewImage.src = imageUrl;
+                            sideBar_previewImage.style.display = 'inline'; // 보이게 설정
+                            sideBar_previewImage2.style.display = 'none'; // 숨기기
+                        } else {
+                            // 이미지가 존재하지 않는 경우
+                            sideBar_previewImage.style.display = 'none'; // 숨기기
+                            sideBar_previewImage2.style.display = 'inline'; // 보이게 설정
+                        }
+                    } else {
+                        console.error('One or both of the elements with IDs "sideBar_previewImage" and "sideBar_previewImage2" not found.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to fetch latest profile image:', error);
+                });
+        </script>
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recycle.ecoeco.makerProject.model.dao.manager.AdminProjectMapper">
+
+    <!-- 일반 공용 프로젝트 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO" id="generalProjectResultMap" >
+        <id property="projectNo" column="projectNo"/>
+        <association property="maker" resultMap="makerResultMap"/>
+        <association property="category" resultMap="categoryResultMap"/>
+    </resultMap>
+
+    <!-- 메이커 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.MakerDTO" id="makerResultMap" >
+        <id property="makerNo" column="makerNo"/>
+    </resultMap>
+
+    <!-- 카테고리 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.CategoryDTO" id="categoryResultMap" >
+        <id property="categoryCode" column="categoryCode"/>
+    </resultMap>
+
+    <!-- 새소식 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.NewsDTO" id="projectNewsResultMap" >
+        <id property="newsNo" column="newsNo"/>
+    </resultMap>
+
+    <!-- 리뷰 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ReviewDTO" id="projectReviewResultMap" >
+        <id property="supportReviewsNo" column="supportReviewsNo"/>
+        <association property="userInfo" resultMap="userInfoResultMap"/>
+        <association property="userProfileImage" resultMap="userProfileImageResultMap"/>
+        <association property="project" resultMap="projectResultMap"/>
+    </resultMap>
+
+    <!-- 회원정보 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.membership.model.dto.UserInfoDTO" id="userInfoResultMap" >
+        <id property="userNo" column="userNo"/>
+    </resultMap>
+
+    <!-- 회원 프로필 이미지 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.membership.model.dto.UserProfileImageDTO" id="userProfileImageResultMap" >
+        <id property="profileImageNo" column="profileImageNo"/>
+    </resultMap>
+
+    <!-- 프로젝트 리설트맵 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO" id="projectResultMap" >
+        <id property="projectNo" column="projectNo"/>
+    </resultMap>
+
+
+    <!-- 프로젝트 리스트 토탈 카운트 -->
+    <select id="selectTotalCount" resultType="_int" parameterType="hashmap">
+        SELECT
+        COUNT(A.projectNo)
+        FROM
+        PROJECT A
+        <!-- searchCondition에 따른 조건 -->
+        <if test="searchCondition == 'categoryName'">
+            JOIN
+            CATEGORY C ON(A.categoryCode = C.categoryCode)
+        </if>
+        <where>
+            <if test="searchCondition == 'projectNo'">
+                AND A.projectNo = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'projectName'">
+                AND A.projectName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'categoryName'">
+                AND C.categoryName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'projectStatus'">
+                AND A.projectStatus = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'moreRate'">
+                AND (A.achievedAmount * 100 / A.targetAmount) <![CDATA[ >= ]]> #{ searchValue }
+            </if>
+            <if test="searchCondition == 'underRate'">
+                AND (A.achievedAmount * 100 / A.targetAmount) <![CDATA[ < ]]> #{ searchValue }
+            </if>
+            <if test="searchCondition == 'deliveryYN'">
+                AND A.deliveryYN = #{ searchValue }
+            </if>
+            <!-- searchConditionDate에 따른 조건 -->
+            <if test="searchConditionDate == 'requestDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.requestDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.requestDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.requestDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'approvalDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.approvalDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.approvalDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.approvalDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'startDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.startDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.startDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'endDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.endDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.endDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.endDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'petitionDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.petitionDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.petitionDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.petitionDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <!-- listType에 따른 조건 -->
+            <if test="listType == 'new'">
+                AND A.projectStatus in ('2','3','4')
+            </if>
+            <if test="listType == 'now'">
+                AND A.projectStatus in ('7','8')
+            </if>
+            <if test="listType == 'end'">
+                AND A.projectStatus in ('9','10','11')
+            </if>
+            <if test="listType == 'return'">
+                AND A.projectStatus in ('5','12')
+            </if>
+        </where>
+    </select>
+
+    <!-- 프로젝트 신규 리스트 -->
+    <select id="findProjectNewList" resultMap="generalProjectResultMap">
+        SELECT
+        A.projectNo
+        ,A.projectName
+        ,A.projectStatus
+        ,A.projectSorN
+        ,A.deliveryYN
+        ,A.serviceCharge
+        ,A.targetAmount
+        ,A.requestDate
+        ,A.approvalDate
+        ,A.petitionDate
+        ,A.startDate
+        ,A.endDate
+        ,A.achievedAmount
+        ,A.dueDate
+        ,A.categoryCode
+        ,C.categoryCode
+        ,C.categoryName
+        FROM
+        PROJECT A
+        JOIN
+        CATEGORY C ON(A.categoryCode = C.categoryCode)
+        <where>
+            <if test="searchCondition == 'projectNo'">
+                A.projectNo = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'projectName'">
+                A.projectName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'categoryName'">
+                C.categoryName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'projectStatus'">
+                A.projectStatus = #{ searchValue }
+            </if>
+            <if test="searchConditionDate == 'requestDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.requestDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.requestDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.requestDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'approvalDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.approvalDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.approvalDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.approvalDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'startDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.startDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.startDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            AND A.projectStatus in ('2','3','4','6')
+        </where>
+        ORDER BY
+        A.requestDate DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 프로젝트 진행 리스트 -->
+    <select id="findProjectNowList" resultMap="generalProjectResultMap">
+        SELECT
+        A.projectNo
+        ,A.projectName
+        ,A.projectStatus
+        ,A.projectSorN
+        ,A.deliveryYN
+        ,A.serviceCharge
+        ,A.targetAmount
+        ,A.requestDate
+        ,A.approvalDate
+        ,A.petitionDate
+        ,A.startDate
+        ,A.endDate
+        ,A.achievedAmount
+        ,A.dueDate
+        ,A.categoryCode
+        ,C.categoryCode
+        ,C.categoryName
+        FROM
+        PROJECT A
+        JOIN
+        CATEGORY C ON(A.categoryCode = C.categoryCode)
+        <where>
+            <if test="searchCondition == 'projectNo'">
+                A.projectNo = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'projectName'">
+                A.projectName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'categoryName'">
+                C.categoryName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'projectStatus'">
+                A.projectStatus = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'moreRate'">
+                (A.achievedAmount * 100 / A.targetAmount) <![CDATA[ >= ]]> #{ searchValue }
+            </if>
+            <if test="searchCondition == 'underRate'">
+                (A.achievedAmount * 100 / A.targetAmount) <![CDATA[ < ]]> #{ searchValue }
+            </if>
+            <if test="searchConditionDate == 'startDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.startDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.startDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'endDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.endDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.endDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.endDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            AND A.projectStatus in ('7','8')
+        </where>
+        ORDER BY
+        A.startDate DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 프로젝트 종료 리스트 -->
+    <select id="findProjectEndList" resultMap="generalProjectResultMap">
+        SELECT
+        A.projectNo
+        ,A.projectName
+        ,A.projectStatus
+        ,A.projectSorN
+        ,A.deliveryYN
+        ,A.serviceCharge
+        ,A.targetAmount
+        ,A.requestDate
+        ,A.approvalDate
+        ,A.petitionDate
+        ,A.startDate
+        ,A.endDate
+        ,A.achievedAmount
+        ,A.dueDate
+        ,A.categoryCode
+        ,C.categoryCode
+        ,C.categoryName
+        FROM
+        PROJECT A
+        JOIN
+        CATEGORY C ON(A.categoryCode = C.categoryCode)
+        <where>
+            <if test="searchCondition == 'projectNo'">
+                A.projectNo = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'projectName'">
+                A.projectName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'categoryName'">
+                C.categoryName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'projectStatus'">
+                A.projectStatus = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'moreRate'">
+                (A.achievedAmount * 100 / A.targetAmount) <![CDATA[ >= ]]> #{ searchValue }
+            </if>
+            <if test="searchCondition == 'underRate'">
+                (A.achievedAmount * 100 / A.targetAmount) <![CDATA[ < ]]> #{ searchValue }
+            </if>
+            <if test="searchCondition == 'deliveryYN'">
+                A.deliveryYN = #{ searchValue }
+            </if>
+            <if test="searchConditionDate == 'startDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.startDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.startDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'endDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.endDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.endDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.endDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            AND A.projectStatus in ('9','10','11')
+        </where>
+        ORDER BY
+        A.endDate DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 프로젝트 반려 리스트 -->
+    <select id="findProjectReturnList" resultMap="generalProjectResultMap">
+        SELECT
+        A.projectNo
+        ,A.projectName
+        ,A.projectStatus
+        ,A.projectSorN
+        ,A.deliveryYN
+        ,A.serviceCharge
+        ,A.targetAmount
+        ,A.requestDate
+        ,A.approvalDate
+        ,A.petitionDate
+        ,A.startDate
+        ,A.endDate
+        ,A.achievedAmount
+        ,A.dueDate
+        ,A.categoryCode
+        ,C.categoryCode
+        ,C.categoryName
+        FROM
+        PROJECT A
+        JOIN
+        CATEGORY C ON(A.categoryCode = C.categoryCode)
+        <where>
+            <if test="searchCondition == 'projectNo'">
+                A.projectNo = #{ searchValue }
+            </if>
+            <if test="searchCondition == 'projectName'">
+                A.projectName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'categoryName'">
+                C.categoryName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'projectStatus'">
+                A.projectStatus = #{ searchValue }
+            </if>
+            <if test="searchConditionDate == 'requestDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.requestDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.requestDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.requestDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'petitionDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.petitionDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.petitionDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.petitionDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            <if test="searchConditionDate == 'startDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND A.startDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ A.startDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ A.startDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            AND A.projectStatus in ('5','12')
+        </where>
+        ORDER BY
+        A.petitionDate DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 프로젝트 정보 상세 페이지 -->
+    <select id="projectDetail" resultMap="generalProjectResultMap">
+        SELECT
+        A.projectNo
+        ,A.projectName
+        ,A.projectStatus
+        ,A.projectSorN
+        ,A.deliveryYN
+        ,A.serviceCharge
+        ,A.targetAmount
+        ,A.requestDate
+        ,A.approvalDate
+        ,A.petitionDate
+        ,A.startDate
+        ,A.endDate
+        ,A.achievedAmount
+        ,A.dueDate
+        ,A.categoryCode
+        ,C.categoryCode
+        ,C.categoryName
+        ,B.makerNo
+        ,B.makerName
+        ,B.email
+        ,B.phone
+        ,B.userNo
+        FROM
+        PROJECT A
+        JOIN
+        CATEGORY C ON(A.categoryCode = C.categoryCode)
+        LEFT JOIN
+        MAKER B ON(A.projectNo = B.projectNo)
+        WHERE
+        A.projectNo = #{ projectNo }
+        ORDER BY requestDate
+    </select>
+
+    <!-- 프로젝트 정보 수정 페이지 -->
+    <select id="projectModify" resultMap="generalProjectResultMap">
+        SELECT
+        A.projectNo
+        ,A.projectName
+        ,A.projectStatus
+        ,A.projectSorN
+        ,A.deliveryYN
+        ,A.serviceCharge
+        ,A.targetAmount
+        ,A.requestDate
+        ,A.approvalDate
+        ,A.petitionDate
+        ,A.startDate
+        ,A.endDate
+        ,A.achievedAmount
+        ,A.dueDate
+        ,A.categoryCode
+        ,C.categoryCode
+        ,C.categoryName
+        ,B.makerNo
+        ,B.makerName
+        ,B.email
+        ,B.phone
+        ,B.userNo
+        FROM
+        PROJECT A
+        JOIN
+        CATEGORY C ON(A.categoryCode = C.categoryCode)
+        LEFT JOIN
+        MAKER B ON(A.projectNo = B.projectNo)
+        WHERE
+        A.projectNo = #{ projectNo }
+        ORDER BY requestDate
+    </select>
+
+    <!-- 프로젝트 정보 수정 -->
+    <update id="modifyProject" parameterType="java.util.Map">
+        UPDATE
+        PROJECT A, MAKER B
+        SET
+        A.categoryCode = #{ categoryCode }
+        ,A.projectStatus = #{ projectStatus }
+        ,A.startDate = #{ startDate }
+        ,A.endDate = #{ endDate }
+        ,B.phone = #{ phone }
+        ,B.email = #{ email }
+        WHERE
+        A.projectNo = B.projectNo
+        AND A.projectNo = #{ projectNo }
+    </update>
+
+    <!-- 프로젝트 정보 수정 페이지 카테고리 -->
+    <select id="findCategoryList" resultType="com.recycle.ecoeco.makerProject.model.dto.CategoryDTO">
+        SELECT
+        categoryCode
+        ,categoryName
+        FROM
+        CATEGORY
+        ORDER BY categoryCode
+    </select>
+
+    <!-- 프로젝트 새소식 리스트 -->
+    <select id="projectNews" resultType="com.recycle.ecoeco.makerProject.model.dto.NewsDTO">
+        SELECT
+        newsNo
+        ,newsCategory
+        ,newsTitle
+        ,newsContent
+        ,newsDate
+        ,newsImage
+        ,projectNo
+        ,userNo
+        FROM
+        NEWS
+        WHERE
+        projectNo = #{projectNo}
+        ORDER BY
+        newsNo DESC
+    </select>
+
+    <!-- 프로젝트 새소식 삭제 -->
+    <delete id="deleteNews" parameterType="java.util.List">
+        DELETE FROM
+        NEWS
+        WHERE
+        newsNo in
+        <foreach item="selectedNews" collection="list" open="(" separator="," close=")">
+            #{selectedNews}
+        </foreach>
+    </delete>
+
+    <!-- 프로젝트 리뷰 리스트 -->
+    <select id="projectReview" resultMap="projectReviewResultMap">
+        SELECT
+        A.supportReviewsNo
+        ,A.supportReviewsDate
+        ,A.supportReviewsContent
+        ,A.supportReviewsCategory
+        ,A.projectNo
+        ,A.userNo
+        ,U.userNo
+        ,U.userName
+        ,UP.profileImagePath
+        ,UP.profileImageSaveName
+        FROM
+        SUPPORT_REVIEWS A
+        JOIN
+        USER_INFO U ON(A.userNo = U.userNo)
+        LEFT JOIN
+        USER_PROFILE_IMAGE UP ON(A.userNo = UP.userNo)
+        WHERE
+        A.projectNo = #{projectNo}
+        ORDER BY
+        A.supportReviewsNo DESC
+    </select>
+
+    <!-- 프로젝트 리뷰 삭제 -->
+    <delete id="deleteReview" parameterType="java.util.List">
+        DELETE FROM
+        SUPPORT_REVIEWS
+        WHERE
+        supportReviewsNo in
+        <foreach item="selectedReviews" collection="list" open="(" separator="," close=")">
+            #{selectedReviews}
+        </foreach>
+    </delete>
+
+    <!-- 프로젝트 삭제 시작 -->
+    <!-- 프로젝트 정보 삭제 -->
+    <delete id="deleteProjectInfo" parameterType="_int">
+        DELETE FROM
+        PROJECT
+        WHERE
+        projectNo = #{ projectNo }
+    </delete>
+    <!-- 프로젝트 메이커 삭제 -->
+    <delete id="deleteProjectMaker" parameterType="_int">
+        DELETE FROM
+        MAKER
+        WHERE
+        projectNo = #{ projectNo }
+    </delete>
+    <!-- 프로젝트 스토리 삭제 -->
+    <delete id="deleteProjectStory" parameterType="_int">
+        DELETE FROM
+        STORY
+        WHERE
+        projectNo = #{ projectNo }
+    </delete>
+    <!-- 프로젝트 리워드 삭제 -->
+    <delete id="deleteProjectReward" parameterType="_int">
+        DELETE FROM
+        REWARD
+        WHERE
+        projectNo = #{ projectNo }
+    </delete>
+    <!-- 프로젝트 삭제 끝 -->
+
+    <!-- 프로젝트 삭제 시 연결 DB 검색 -->
+    <select id="findProjectDeleteDB" parameterType="java.util.Map">
+        SELECT
+        A.projectNo
+        ,COUNT(M.makerNo) AS makerNo
+        ,COUNT(S.storyNo) AS storyNo
+        ,COUNT(R.rewardNo) AS rewardNo
+        ,COUNT(N.newsNO) AS newsNO
+        ,COUNT(SR.supportReviewsNo) AS supportReviewsNo
+        ,COUNT(SE.settlementNo) AS settlementNo
+        FROM
+        PROJECT A
+        LEFT JOIN
+        MAKER M ON(A.projectNo = M.projectNo)
+        LEFT JOIN
+        STORY S ON(A.projectNo = S.projectNo)
+        LEFT JOIN
+        REWARD R ON(A.projectNo = R.projectNo)
+        LEFT JOIN
+        NEWS N ON(A.projectNo = N.projectNo)
+        LEFT JOIN
+        SUPPORT_REVIEWS SR ON(A.projectNo = SR.projectNo)
+        LEFT JOIN
+        SETTLEMENT SE ON(A.projectNo = SE.projectNo)
+        LEFT JOIN
+        `ORDER` O ON(R.rewardNo = O.rewardNo)
+        WHERE
+        A.projectNo = #{ projectNo }
+        GROUP BY
+        A.projectNo;
+    </select>
+</mapper>

@@ -1,0 +1,29 @@
+<html xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<header id="header">
+	<div class="header_top">
+		<div class="inner relative">
+			<h1><img src="/images/manager/common/ecoeco_logo.png"></h1>
+			<th:block sec:authorize="isAuthenticated()">
+				<div class="user_name">
+					<span class="ico"></span>
+					<p class="txt"><span sec:authentication="principal.userName"></span>님</p>
+					<span class="info">통합관리자</span>
+				</div>
+				<ul class="btn_wrap clearfix">
+					<li class="logout">
+						<a href="#"  id="logout">로그아웃</a>
+					</li>
+				</ul>
+			</th:block>
+		</div>
+	</div>
+	
+</header>
+<script>
+	if(document.getElementById("logout")) {
+		const $logout = document.getElementById("logout");
+		$logout.onclick = function() {
+			location.href = "/user/mypage/logout";
+		}
+	}
+</script>

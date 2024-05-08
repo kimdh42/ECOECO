@@ -1,0 +1,209 @@
+<div th:replace="/manager/common/header.html"></div>
+<div th:replace="/manager/common/gnb.html"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+				<li class="btn_sub on"><a href="#">프로젝트 관리</a>
+					<ul class="sub_menu" style="display: block;">
+						<li><a href="/manager/project/project_new_list">신규 프로젝트</a></li>
+						<li><a href="/manager/project/project_now_list">진행 프로젝트</a></li>
+						<li><a href="/manager/project/project_end_list">종료 프로젝트</a></li>
+						<li><a href="/manager/project/project_return_list">반려 프로젝트</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+			</ul>
+		</aside>		
+		<div class="container clearfix">
+			<div class="content">
+				<div class="top_button">
+					<button class="custom-btn btn-5" th:onclick="|location.href ='@{/manager/project/project_detail(projectNo=${ projectNo }, listType=${ listType })}'|">프로젝트 정보</button><!--
+				 	--><button class="custom-btn btn-5" onclick="location.href ='#'">스토리</button><!--
+				 	--><button class="custom-btn btn-5" th:onclick="|location.href ='@{/manager/project/project_news(projectNo=${ projectNo }, listType=${ listType })}'|">새소식</button><!--
+				 	--><button class="custom-btn btn-5" th:onclick="|location.href ='@{/manager/project/project_review(projectNo=${ projectNo }, listType=${ listType })}'|">응원/리뷰</button><!--
+					--><button class="custom-btn btn-5" onclick="location.href ='#'">리워드 정보</button>
+				</div>
+				<div class="list_tit">
+					<h3>프로젝트 정보 수정</h3>
+				</div>
+				<form action="/manager/project/project_modify" method="post">
+				<div class="list">
+					<div class="search_wrap">
+						<div class="scrollable">
+
+							<table class="search_list">
+								<caption>프로젝트 수정</caption>
+								<colgroup>
+									<col style="width:10%;">
+									<col style="width:10%;">
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">프로젝트번호</th>
+										<th scope="col">카테고리</th>
+										<th scope="col">프로젝트명</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr th:each="project : ${ projectModify }">
+										<td th:text="${ project.projectNo }"></td>
+											<td>
+												<input type="hidden" name="projectNo" id="projectNo" th:value="${ project.projectNo }">
+												<input type="hidden" name="listType" id="listType" th:value="${ listType }">
+												<input type="hidden" name="getCategoryCode" id="getCategoryCode" th:value="${ project.categoryCode }">
+												<select name="categoryCode" id="categoryCode">
+												</select>
+											</td>
+										<td th:text="${ project.projectName }"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">프로젝트상태</th>
+										<th scope="col">요청일</th>
+										<th scope="col">승인일</th>
+										<th scope="col">반려일</th>
+										<th scope="col">시작일</th>
+										<th scope="col">종료일</th>
+										<th scope="col">마감일</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr th:each="project : ${ projectModify }">
+										<td>
+											<select name="projectStatus" id="projectStatus">
+												<option value="1" th:selected="1 == ${project.projectStatus}">작성중</option>
+												<option value="2" th:selected="2 == ${project.projectStatus}">심사대기</option>
+												<option value="3" th:selected="3 == ${project.projectStatus}">심사중</option>
+												<option value="4" th:selected="4 == ${project.projectStatus}">승인완료</option>
+												<option value="5" th:selected="5 == ${project.projectStatus}">승인반려</option>
+												<option value="6" th:selected="6 == ${project.projectStatus}">오픈예정</option>
+												<option value="7" th:selected="7 == ${project.projectStatus}">진행중</option>
+												<option value="8" th:selected="8 == ${project.projectStatus}">일시중지</option>
+												<option value="9" th:selected="9 == ${project.projectStatus}">결제진행중</option>
+												<option value="10" th:selected="10 == ${project.projectStatus}">배송대기중</option>
+												<option value="11" th:selected="11 == ${project.projectStatus}">프로젝트마감</option>
+											</select>
+										</td>
+										<td th:text="${project.requestDate}"></td>
+										<td th:text="${project.approvalDate}"></td>
+										<td th:text="${project.petitionDate}"></td>
+										<td>
+											<input type="date" name="startDate" th:value="${project.startDate}"/>
+										</td>
+										<td>
+											<input type="date" name="endDate" th:value="${project.endDate}"/>
+										</td>
+										<td th:text="${project.dueDate}"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">목표금액</th>
+										<th scope="col">달성액</th>
+										<th scope="col">달성률</th>
+										<th scope="col">서포터</th>
+										<th scope="col">배송상품</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr th:each="project : ${ projectModify }">
+										<td th:text="${#numbers.formatInteger(project.targetAmount,1,'COMMA')}"></td>
+										<td th:text="${#numbers.formatInteger(project.achievedAmount,1,'COMMA')}"></td>
+										<td th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' %'}"></td>
+										<td>170명</td>
+										<td th:text="${ project.deliveryYN }"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">메이커</th>
+										<th scope="col">메이커연락처</th>
+										<th scope="col">메이커이메일</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr th:each="project : ${ projectModify }">
+										<td th:text="${ project.maker.makerName }"></td>
+										<td><input type="text" name="phone" th:value="${ project.maker.phone }"></td>
+										<td><input type="text" name="email" th:value="${ project.maker.email }"></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+						
+						<div class="write nshadow">
+							<div class="write_btn align_c mt35">
+								<button class="btn btn_modify">저장</button>
+								<button class="btn" onclick="history.go(-1)">취소</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	fetch('/manager/project/category').then(res => res.json()).then(data => {
+		const $categoryCode = document.querySelector('#categoryCode');
+		// 프로젝트의 카테고리 코드를 input type="hidden" 에 넣어서 가져옴
+		const selectedCategoryCode = document.querySelector('#getCategoryCode').value;
+		// console.log("selectedCategoryCode : ",selectedCategoryCode);
+
+		data.forEach(category => {
+			const $option = document.createElement('option');
+			$option.textContent = category.categoryName;
+			$option.value = category.categoryCode;
+			$categoryCode.appendChild($option);
+
+			// 가져온 카테고리 코드와 option의 value를 비교하여 선택 여부 결정
+			if ($option.value === selectedCategoryCode) {
+				// console.log("selected : ", $option.value);
+				$option.selected = true; // 선택된 option에 selected 속성 추가
+			}
+
+		});
+	});
+</script>
+</body>
+</html>

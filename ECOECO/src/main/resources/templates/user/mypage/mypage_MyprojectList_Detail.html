@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypage_MyprojectList_Detail</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 850px; margin-top: 50px;">
+
+        <div class="detailBarBox">
+            <table class="myprojectDetailBar"  style="width: 80%; margin-top: 50px;">
+                <tr>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectDTO.projectNo}'|">프로젝트정보</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectDTO.projectNo}'|">스토리</td>
+                    <td th:onclick="|location.href='/user/mypage/news?projectNo=${projectDTO.projectNo}'|">새소식</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail-review?projectNo=${projectDTO.projectNo}'|">응원/리뷰</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectDTO.projectNo}'|" style="border-right: none;">리워드정보</td>
+                </tr>
+
+            </table>
+        </div>
+        <form id="productImgForm" action="/user/mypage/inputProductImg">
+            <div class="productImg" style="float: left; margin-left: 30px; margin-right: 50px; margin-top: 50px;">
+                <img class="inputProductImage" style="background-image: url(/images/user/mypage/귀여운몰라모코코.png);"/>
+                <!--                        <img class="inputProductImage" th:src="@{${myprojectDetail.image.makerImagePath} + ${myprojectDetail.image.makerImageSaveName}}"/>-->
+            </div>
+        </form>
+        <form id="mypageMyprojectListDetailForm" action="/user/mypage/mypage_MyprojectList_Detail">
+            <div class="myprojectDetail" style="float: left; margin-top: 30px;">
+                <p><strong th:text="${projectDTO.projectName}"></strong></p>
+                <p th:text="'프로젝트 번호 : ' + ${projectDTO.projectNo}"></p>
+                <p th:text="'수수료 : ' + ${projectDTO.serviceCharge}"></p>
+                <p th:text="'목표금액 : ' + ${projectDTO.targetAmount}"></p>
+                <p th:text="'달성액 : ' + ${projectDTO.achievedAmount}"></p>
+                <p th:text="'시작일 : ' + ${projectDTO.startDate}"></p>
+                <p th:text="'종료일 : ' + ${projectDTO.endDate}"></p>
+                <p th:text="'마감일 : ' + ${projectDTO.dueDate}"></p><br>
+
+                <button type="button" th:onclick="|location.href='/user/mypage/payment_Status?projectNo=${projectDTO.projectNo}'|">결제현황</button><br><br>
+                <button type="button" th:onclick="|location.href='/user/mypage/settlement_Info?projectNo=${projectDTO.projectNo}'|">정산정보</button>
+            </div>
+        </form>
+    </div>
+    </div>
+
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

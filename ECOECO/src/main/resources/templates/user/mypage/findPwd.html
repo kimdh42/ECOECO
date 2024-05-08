@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>searchpwd</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/searchid.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+
+
+</head>
+<body>
+<header style="height: 203px; width: 100%;">
+    <div class="middle">
+        <div class="logo">
+            <a href="/main">
+                <img src="/images/user/common/ecoeco_logo.png" alt="에코에코 로고">
+            </a>
+        </div>
+    </div>
+</header>
+
+<main style="width: 1440px;">
+
+    <form id="findPwdForm" method="post" action="/user/mypage/findPwd">
+        <div style="position: relative; left: 20%;">
+            <h2>비밀번호 찾기</h2>
+            <hr style="text-align: left; margin-left: 0px; width: 60%;">
+        </div>
+        <br>
+        <br>
+        <br>
+        <div class="searchidBox">
+            <div>
+                <input name="searchPwdId" class="searchPwdId" type="text" placeholder="아이디를 입력해 주세요">
+            </div>
+            <br>
+            <div>
+                <input name="searchPwdEmail" class="searchPwdEmail" type="email" placeholder="이메일을 입력해 주세요">
+            </div>
+            <br><br>
+            <button type="button" class="searchPwdButton" onclick="openFindPwdModal()">비밀번호 찾기</button>
+        </div>
+    </form>
+
+    <div id="findPwdModal" class="findPwdModal" style="display: none;">
+        <div class="successFindPwdModal-content">
+            <p id="successFindPwdMessage"></p>
+            <p id="failFindPwdMessage"></p>
+            <button id="FindPwdModal_button" onclick="closeFindPwdModal()">확인</button>
+        </div>
+    </div>
+
+</main>
+
+<script type="text/javascript" th:src="@{/js/user/mypage/findUser.js}"></script>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment" >
+
+    </footer>
+</div>
+
+</body>
+</html>

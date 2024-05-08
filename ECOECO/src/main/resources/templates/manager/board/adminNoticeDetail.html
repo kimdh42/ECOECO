@@ -1,0 +1,107 @@
+<div th:replace="~{/manager/common/header.html}"></div>
+<div th:replace="~{/manager/common/gnb.html}"></div>
+<link rel="stylesheet" href="/css/manager/adminNotice.css">
+<script src="/js/manager/board/boardEvent.js" type="text/javascript"></script>
+
+<div class="sub_wrap">
+	<aside id="lnb">
+		<ul class="menu">
+			<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+			<li><a href="/manager/project/project_new_list">프로젝트 관리</a></li>
+			<li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+			<li class="btn_sub on">
+				<a href="/manager/board/adminNoticeList">게시판관리</a>
+				<ul class="sub_menu" style="display: block;">
+					<li class="on"><a href="/manager/board/adminNoticeList">공지사항</a></li>
+					<li><a href="/manager/board/adminUsGreenList">우리가그린</a></li>
+				</ul>
+			</li>
+		</ul>
+	</aside>
+	<div class="container clearfix">
+		<div class="content">
+
+			<div class="list_tit">
+				<h3>공지사항 상세</h3>
+			</div>
+			<div class="list">
+				<div class="search_wrap">
+					<div class="scrollable">
+						<!-- 이미지 삽입 -->
+						<img class="centered-image" id="noticeImage"
+							 th:src="@{${noticeDetail.image.noticePath} + ${noticeDetail.image.noticeSaveName}}">
+
+						<!-- 첫 번째 테이블 -->
+						<table class="search_list">
+							<caption>상세보기</caption>
+							<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">분류</th>
+								<th scope="col">소분류</th>
+								<th scope="col">작성일</th>
+								<th scope="col">작성자</th>
+							</tr>
+							</thead>
+							<tbody class="td_bcw">
+							<tr th:if="${noticeDetail != null}">
+								<td th:text="${noticeDetail.noticeNo}"></td>
+								<td th:text="${noticeDetail.noticeCategory}"></td>
+								<td th:text="${noticeDetail.noticeSubCategory}"></td>
+								<td th:text="${noticeDetail.noticeDate}"></td>
+								<td th:text="${noticeDetail.writer.userName}"></td>
+							</tr>
+							</tbody>
+						</table>
+
+						<!-- 두 번째 테이블 -->
+						<table class="search_list">
+							<caption>상세보기</caption>
+							<thead>
+							<tr>
+								<th scope="col">제목</th>
+							</tr>
+							</thead>
+							<tbody class="td_bcw">
+							<tr th:if="${noticeDetail != null}">
+								<td th:text="${noticeDetail.noticeTitle}"></td>
+							</tr>
+							</tbody>
+						</table>
+
+						<!-- 세 번째 테이블 -->
+						<table class="search_list">
+							<caption>상세보기</caption>
+							<thead>
+							<tr>
+								<th scope="col">내용</th>
+							</tr>
+							</thead>
+							<tbody class="td_bcw">
+							<tr th:if="${noticeDetail != null}">
+								<td th:text="${noticeDetail.noticeDetail}"></td>
+							</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="write nshadow" th:if="${noticeDetail != null and noticeDetail.noticeNo != null}">
+						<!-- noticeDetail 객체를 직접 사용 -->
+						<div class="write_btn align_c mt35">
+							<button class="btn btn_modify" type="button"
+									th:onclick="'noticeModify(' + ${noticeDetail.noticeNo} + ')'">수정
+							</button>
+							<button type="button" class="btn" th:onclick="|window.location.href='/manager/board/adminNoticeList'|">목록</button>
+							<button class="btn btn_del" th:onclick="'deleteNotice(' + ${noticeDetail.noticeNo} + ')'">
+								삭제
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+</body>
+</html>

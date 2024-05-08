@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/main/main.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}"/>
+    <script th:src="@{/js/main/user/header.js}"></script>
+    <title>section 페이지</title>
+</head>
+<body>
+<div th:replace="~{/user/common/header::header}"></div>
+<div class="container">
+    <h3 th:if="${#strings.equals(section, 'popular')}" class="popularTitle">인기 프로젝트</h3>
+    <h3 th:if="${#strings.equals(section, 'new')}" class="newTitle">신규 프로젝트</h3>
+    <h3 th:if="${#strings.equals(section, 'open')}" class="openTitle">오픈예정 프로젝트</h3>
+    <h3 th:if="${#strings.equals(section, 'close')}" class="closeTitle">마감임박 프로젝트</h3>
+
+    <div th:if="${#strings.equals(section, 'popular')}" class="popularLists">
+        <div class="item" th:each="project : ${ popularList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(section, 'new')}" class="newLists">
+        <div class="item" th:each="project : ${ newList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+                    <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+                </a>
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(section, 'open')}" class="openLists">
+        <div class="item" th:each="project : ${ openList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+
+    <div th:if="${#strings.equals(section, 'close')}" class="closeLists">
+        <div class="item" th:each="project : ${ closeList }">
+            <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+                <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+            </th:block>
+            <p class="text1"
+               th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+            <p class="text2" th:text="${ project.projectName }"></p>
+            <p class="text3" th:text="${ project.maker.makerName }"></p>
+        </div>
+    </div>
+    <div th:replace="/user/common/footer.html"></div>
+</div>
+</body>
+</html>

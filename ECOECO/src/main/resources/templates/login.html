@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>login</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/login.css}">
+    <script type="text/javascript" th:src="@{/js/user/mypage/login.js}"></script>
+
+</head>
+<body>
+<header style="height: 203px; width: 100%;">
+    <div class="middle">
+        <div class="logo">
+            <a href="/main">
+                <img src="/images/user/common/ecoeco_logo.png" alt="에코에코 로고">
+            </a>
+        </div>
+    </div>
+</header>
+
+<main style="width: 1440px; text-align: center;">
+    <!--    <form id="loginForm">-->
+
+
+    <form id="loginForm" method="POST" action="/login">
+
+
+        <h2>로그인</h2>
+        <div>
+            <input name="userId" class="inputId" type="text" placeholder="아이디 입력">
+        </div>
+        <br>
+        <div>
+            <input name="userPwd" class="inputPwd" type="password" placeholder="비밀번호 입력">
+        </div>
+        <p style="margin-top: 0; margin-bottom: 32px;">
+            <sub>
+                <a  style="position: relative; left: 60px" href="/user/mypage/findSearchInfo">로그인 정보를 잊으셨나요?</a>
+            </sub>
+        </p>
+        <!--        <button id="loginButton" type="button">로그인</button>-->
+        <input id="loginButton" class="loginButton" type="submit" value="로그인"></input>
+        <br>
+        <br>
+        <div>
+            <sub>아직 ECOECO 회원이 아니신가요?
+                <u class="joinus"><a href="/joinus">회원가입하기</a></u></sub>
+        </div>
+        <br>
+        <br>
+    </form>
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment" class="footer">
+
+    </footer>
+</div>
+
+</body>
+</html>

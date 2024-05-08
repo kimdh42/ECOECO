@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypage_Myproject</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 900px">
+        <div>
+            <h2>나의 프로젝트</h2>
+            <hr style="text-align: left; margin-left: 0px; width: 80%;"><br>
+        </div>
+
+        <div>
+            <div class="projectTextBox">
+                <p>진행중인 프로젝트가 없습니다</p>
+                <p>에코에코와 함께 새로운 프로젝트를 시작해 보세요😉</p>
+            </div>
+            <div class="projectButtonBox">
+                <button onclick="location.href='/user/project/projectInfo/projectInfo'">프로젝트 생성하기</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

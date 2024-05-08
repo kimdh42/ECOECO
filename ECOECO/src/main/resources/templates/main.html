@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" type="text/css" th:href="@{/css/user/main/main.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}"/>
+  <script th:src="@{/js/main/user/header.js}"></script>
+  <title>메인 페이지</title>
+</head>
+<body>
+<div th:replace="~{/user/common/header::header}"></div>
+<div class="container">
+  <img src="/images/user/main/main_banner.png" alt="메인 배너">
+
+
+  <!-- 메인페이지 바디부분 프로젝트 -->
+  <h3 class="ingTitle">인기 프로젝트</h3>
+
+  <div class="ingLists">
+    <div class="item" th:each="project : ${ mainPopularList }">
+      <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+        <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|"><img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}}"  alt="상세이미지"></a>
+      </th:block>
+      <p class="text1"
+         th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+      <p class="text2" th:text="${ project.projectName }"></p>
+      <p class="text3" th:text="${ project.maker.makerName }"></p>
+    </div>
+  </div>
+
+
+  <a href="http://localhost:8080/user/section?section=open">
+    <div class="soon_banner">
+      <img class="soon_cover" src="/images/user/main/cover.png" alt="나무커버이미지">
+      <img class="soon_img" src="/images/user/main/main_tree_banner.png" alt="나무이미지">
+      <p class="soon_text1">오픈예정된 프로젝트가 궁금하다면?</p>
+      <p class="soon_text2">바로가기!</p>
+      <p class="soon_text3">펀딩의 새로운 세계로! 다가오는 프로젝트를 발견하세요!</p>
+    </div>
+  </a>
+
+  <h3 class="ingTitle">오픈예정 프로젝트</h3>
+
+  <div class="ingLists">
+    <div class="item" th:each="project : ${ mainOpenList }">
+      <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+        <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+          <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+        </a>
+      </th:block>
+      <p class="text1"
+         th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+      <p class="text2" th:text="${ project.projectName }"></p>
+      <p class="text3" th:text="${ project.maker.makerName }"></p>
+    </div>
+  </div>
+
+  <h3 class="ingTitle">신규 프로젝트</h3>
+
+  <div class="ingLists">
+    <div class="item" th:each="project : ${ mainNewList }">
+      <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+        <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+          <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+        </a>
+      </th:block>
+      <p class="text1"
+         th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+      <p class="text2" th:text="${ project.projectName }"></p>
+      <p class="text3" th:text="${ project.maker.makerName }"></p>
+    </div>
+  </div>
+
+  <h3 class="ingTitle">마감임박 프로젝트</h3>
+
+  <div class="ingLists">
+    <div class="item" th:each="project : ${ mainCloseList }">
+      <th:block th:each="thumbnail:${project.projectThumbnailDTO}">
+        <a th:href="|@{'/user/project/detail/detail?projectNo=' + ${project.projectNo}}|">
+          <img th:src="@{${thumbnail.projectImagePath} + ${thumbnail.projectImageSaveName}} " alt="상세이미지">
+        </a>
+      </th:block>
+      <p class="text1"
+         th:text="${#numbers.formatInteger((project.achievedAmount * 100 / project.targetAmount) ,1,'COMMA') + ' % 달성'}"></p>
+      <p class="text2" th:text="${ project.projectName }"></p>
+      <p class="text3" th:text="${ project.maker.makerName }"></p>
+    </div>
+  </div>
+
+</div>
+<div th:replace="/user/common/footer.html"></div>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>registNews</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 850px;">
+        <div class="detailBarBox">
+            <table class="myprojectDetailBar" style="width: 80%; margin-top: 50px;">
+                <tr>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectNo}'|">프로젝트정보</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectNo}'|">스토리</td>
+                    <td th:onclick="|location.href='/user/mypage/news?projectNo=${projectNo}'|">새소식</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectNo}'|">응원/리뷰</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${projectNo}'|" style="border-right: none;">리워드정보</td>
+                </tr>
+
+            </table>
+        </div>
+
+        <form id="registNewsForm" action="/user/mypage/registNews" method="post">
+            <input type="hidden" id="projectNo" name="projectNo" th:value="${projectNo}">
+
+            <div style="margin-top: 50px;">
+                <h2 style="width: 500px; display: inline;">새소식 등록</h2>
+                <button type="submit" class="registNewsHeadButton" th:onclick="|location.href='/user/mypage/news?projectNo=${projectNo}'|">저장하기</button>
+                <hr style="text-align: left; margin-left: 0px; width: 90%;"><br>
+            </div>
+
+            <div style="height: 650px;">
+                <table class="newsRegist" style="margin-left: 30px;">
+                    <tr>
+                        <td><strong>분류</strong></td>
+                        <td colspan="3" style="text-align: left;">새소식</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>소분류</strong></td>
+                        <td>
+                            <select name="newsCategory" class="subcategory">
+                                <option value="선택">선택</option>
+                                <option value="리워드안내">리워드안내</option>
+                                <option value="공지사항">공지사항</option>
+                                <option value="이벤트">이벤트</option>
+                            </select>
+                            <!--                                        <input type="hidden" id="newsCategory" name="newsCategory">-->
+                        </td>
+                        <td><strong>이미지첨부</strong></td>
+                        <td>
+                            <label for="registNewsImage">
+                                <input type="file" id="registNewsImage" style="cursor: pointer; margin-left: 20px;">
+                            </label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>제목</strong></td>
+                        <td colspan="3" style="text-align: left;"><textarea id="newsTitle" name="newsTitle" class="registNewsTextTitle"></textarea></td>
+                    </tr>
+
+                    <tr style="height: 500px;">
+                        <td><strong>내용</strong></td>
+                        <td colspan="3"><textarea id="newsContent" name="newsContent" class="registNewsTextBox" cols="50" rows="10"></textarea></td>
+                    </tr>
+                </table>
+            </div>
+
+        </form>
+
+    </div>
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment"></footer>
+</div>
+
+</body>
+</html>             

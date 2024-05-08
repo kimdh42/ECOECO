@@ -1,0 +1,122 @@
+<div th:replace="/manager/common/header.html"></div>
+<div th:replace="/manager/common/gnb.html"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+				<li class="btn_sub on"><a href="#">프로젝트 관리</a>
+					<ul class="sub_menu" style="display: block;">
+						<li><a href="/manager/project/project_new_list">신규 프로젝트</a></li>
+						<li><a href="/manager/project/project_now_list">진행 프로젝트</a></li>
+						<li><a href="/manager/project/project_end_list">종료 프로젝트</a></li>
+						<li><a href="/manager/project/project_return_list">반려 프로젝트</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+			</ul>
+		</aside>		
+		<div class="container clearfix">
+			<div class="content">
+				<div class="top_button">
+					<button class="custom-btn btn-5" th:onclick="|location.href ='@{/manager/project/project_detail(projectNo=${ projectNo }, listType=${ listType })}'|">프로젝트 정보</button><!--
+				 	--><button class="custom-btn btn-5" onclick="location.href ='#'">스토리</button><!--
+				 	--><button class="custom-btn btn-5" th:onclick="|location.href ='@{/manager/project/project_news(projectNo=${ projectNo }, listType=${ listType })}'|">새소식</button><!--
+				 	--><button class="custom-btn btn-5" th:onclick="|location.href ='@{/manager/project/project_review(projectNo=${ projectNo }, listType=${ listType })}'|">응원/리뷰</button><!--
+					--><button class="custom-btn btn-5" onclick="location.href ='#'">리워드 정보</button>
+				</div>
+				<div class="list_tit">
+					<h3>응원 / 리뷰</h3>
+				</div>
+				<div class="list">
+					<div class="search_wrap">
+						<form id="deleteForm" action="/manager/project/deleteReview" method="post">
+							<input type="hidden" name="projectNo" id="projectNo" th:value="${ projectNo }">
+							<div class="scrollable">
+								<ul class="reviews">
+									<li th:each="project : ${ projectReview }">
+										<th:block th:if="${ project.userProfileImage.profileImageSaveName != null and project.userProfileImage.profileImageSaveName != '' }">
+											<span class="profile"><img th:src="@{${project.userProfileImage.profileImagePath} + ${project.userProfileImage.profileImageSaveName}}"></span>
+										</th:block>
+										<th:block th:if="${ project.userProfileImage.profileImageSaveName == null or project.userProfileImage.profileImageSaveName == '' }">
+											<span class="profile"><img src="/images/manager/sub/profile1.png"></span>
+										</th:block>
+										<span class="check">
+											<input type="checkbox" th:id="|reviewsNo_${project.supportReviewsNo}|"
+												   				   th:name="|reviewsNo_${project.supportReviewsNo}|"
+													   			   th:value="${project.supportReviewsNo}">
+										</span>
+										<span class="name" th:text="${project.userInfo.userName}"></span>
+										<th:block th:if="${ project.supportReviewsCategory == 1 }">
+											<span class="category cheer">응원</span>
+										</th:block>
+										<th:block th:if="${ project.supportReviewsCategory == 2 }">
+											<span class="category review">리뷰</span>
+										</th:block>
+										<p class="date" th:text="${ project.supportReviewsDate }"></p>
+										<p class="comment" th:text="${ project.supportReviewsContent }"></p>
+									</li>
+								</ul>
+							</div>
+							<div class="write nshadow">
+								<div class="write_btn align_c mt35">
+									<!-- <button class="btn" onclick="history.go(-1)">목록</button> -->
+									<button class="btn btn_del" type="button"
+											th:attr="data-projectNo=${projectNo}, data-listType=${listType}"
+											onclick="deleteSelected(this.getAttribute('data-projectNo'), this.getAttribute('data-listType'))">삭제
+									</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function deleteSelected(projectNo, listType) {
+
+		// 선택된 체크박스 확인
+		let checkedCheckboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+
+		// 선택된 체크박스가 없으면 알림 출력
+		if (checkedCheckboxes.length === 0) {
+			alert("선택된 응원/리뷰가 없습니다.");
+			return;
+		}
+
+		if (!confirm("선택한 응원/리뷰를 삭제합니다. \n정말 진행하시겠습니까?")) {
+		} else {
+			// 선택된 항목의 supportReviewsNo 추출
+			let selectedReviews = [];
+			document.querySelectorAll('input[type="checkbox"]:checked').forEach(function (checkbox) {
+				selectedReviews.push(checkbox.value);
+			});
+
+			// supportReviewsNo를 hidden input에 설정하여 폼 제출
+			let deleteForm = document.getElementById('deleteForm');
+			selectedReviews.forEach(function (supportReviewsNo) {
+				// supportReviewsNo를 전달할 hidden input 요소 생성
+				let input = document.createElement('input');
+				input.type = 'hidden';
+				input.name = 'selectedReviews';
+				input.value = supportReviewsNo;
+				deleteForm.appendChild(input);
+			});
+
+			// listType을 전달할 hidden input 요소 생성
+			let listTypeInput = document.createElement('input');
+			listTypeInput.type = 'hidden';
+			listTypeInput.name = 'listType';
+			listTypeInput.value = listType;
+			deleteForm.appendChild(listTypeInput);
+
+			// 폼 제출
+			deleteForm.submit();
+		}
+	}
+</script>
+</body>
+</html>

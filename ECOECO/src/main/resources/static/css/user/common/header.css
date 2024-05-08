@@ -1,0 +1,41 @@
+/*html,body{margin: 0; padding: 0; width: 100%;}*/
+/* #wrap{max-width: 1440px;} */
+header{display: flex; flex-direction: column; box-shadow: 0 4px 12px gray;}
+.top{display: flex; flex-direction: row; justify-content:flex-end; padding-top: 10px; padding-right: 10px;}
+.top .btn{width: 130px; height: 50px; cursor: pointer;}
+.top .ljBtn{border:none; background-color:rgba(0, 0, 0, 0);}
+.top .project{border-radius:10px ; background-color: #37BD6D; border: none; font-weight: bold; color: white;}
+.middle{width: 100%;}
+.logo{display:flex; justify-content: center;}
+.logo img{width:300px; height: 80px; margin-bottom:20px;}
+.gnb{width: 100%;}
+.gnb .gnb-ul{display: flex; flex-direction: row; margin: 0; padding: 0; justify-content: center;}
+.gnb .gnb-ul .gnb-li{display: block; width: 150px; height: 50px; text-align: center;
+    line-height:50px;}
+.gnb .gnb-ul .gnb-li{font-weight: bold;}
+.gnb .gnb-ul .gnb-li a{text-decoration: none; color: black;}
+.gnb .gnb-ul .gnb-li a:visited{color: black;}
+.gnb .gnb-ul .gnb-li > input[type=text] { border: 2px solid lightgray; border-radius: 10px; height: 30px;}
+
+input[type=text]{
+    background-image: url(/static/images/user/common/magnifier.png);
+    background-repeat : no-repeat;
+    background-size: 18px;
+    background-position: 3% 45%;
+}
+input::placeholder{
+    text-indent: 25px;
+}
+/* 서브 카테고리 영역 */
+.sub-category-area{width: 100%;display: none;}
+.sub-category{display: flex; flex-direction: row; margin: 0; padding: 0; justify-content: center;}
+.sub-category li{display: block; width: 129px; height: 50px; text-align: center; line-height:50px;}
+.sub-category li a{text-decoration: none; color: black;}
+.sub-category li a:visited{color: black;}
+
+/* 서브 커뮤니티 영역 */
+.sub-community-area{width: 100%; display: none;}
+.sub-community{display: flex; flex-direction: row; margin: 0; padding: 0; justify-content: center;}
+.sub-community li{display: block; width: 180px; height: 50px; text-align: center; line-height:50px;}
+.sub-community li a{text-decoration: none; color: black;}
+.sub-community li a:visited{color: black;}

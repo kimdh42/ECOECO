@@ -1,0 +1,154 @@
+<div th:replace="/manager/common/header.html"></div>
+<div th:replace="/manager/common/gnb.html"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+				<li><a href="/manager/project/project_new_list">프로젝트 관리</a></li>
+                <li class="btn_sub on">
+					<a href="#">결제 및 정산 관리</a>
+					<ul class="sub_menu" style="display: block;">
+                        <li><a href="/manager/ordertab/order/order_list">주문</a></li>
+                        <li><a href="/manager/ordertab/payment/payment_list">결제 현황</a></li>
+						<li class="on"><a href="/manager/ordertab/settlement/settlement_list">정산대기</a></li>
+						<li><a href="/manager/ordertab/refund/refund_list">취소 환불</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+				
+			</ul>
+		</aside>
+		<div class="container clearfix">
+			<div class="content">
+				<div class="list_tit">
+					<h3>정산대기</h3>
+				</div>
+				<div class="list">
+					<div class="search_wrap">
+						<form acction="#" method="post">
+							<div class="search table_btn ">
+								<select name="searchOption">
+									<option value="1">프로젝트번호</option>
+									<option value="2">프로젝트명</option>
+									<option value="3">회원번호</option>
+									<option value="4">정산상태</option>
+								</select>
+								<input type="text" name="search">
+								<input type="date" name="searchDate1"> ~ 
+								<input type="date" name="searchDate2">
+								<div class="r_btn">
+									<button class="btn btn_search">조회</button>
+								</div>
+							</div>
+						</form>
+						<div class="result table_btn ">
+							<p class="txt">총 <span th:text="${paging.totalCount}"></span>건</p>
+							<!-- <div class="r_btn">
+								<a href="notice_write.html" class="btn">공지사항 등록</a>
+							</div> -->
+						</div>
+						<div class="scrollable">
+							<table class="search_list">
+								<caption>검색결과</caption>
+								<colgroup>
+									<col style="width:5%;">
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">정산번호</th>
+										<th scope="col">프로젝트메이커 회원번호</th>
+										<th scope="col">정산금액</th>
+										<th scope="col">정산상태</th>
+										<th scope="col">프로젝트 종료일</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="settlement : ${ settlementList }" th:onclick="|location.href='/manager/ordertab/settlement/settlement_info?settlementNo=${settlement.settlementNo}'|">
+										<td th:text="${ settlement.settlementNo }"></td>
+										<td th:text="${ settlement.userNo }"></td>
+										<td th:text="${#numbers.formatInteger(settlement.settlementPrice,1,'COMMA')}"></td>
+										<td th:text="${ settlement.settlementStatus }"></td>
+										<td th:text="${ settlement.project.endDate }"></td>
+
+									</tr>
+
+							</table>
+						</div>
+
+						<!-- 페이징 바 -->
+						<div class="pagination mt40" id="paging" align="center">
+
+							<th:block
+									th:if="${ paging.searchCondition != null and paging.searchValue != null }">
+								<!-- 맨 앞으로 이동 -->
+								<button class="front"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=1&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '\''">&lt;&lt;</button>
+
+								<!-- 이전 페이지로 이동 -->
+								<button class="prev"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${paging.page - 1}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '\''"
+										th:disabled="${ paging.page <= 1 }">&lt;</button>
+
+								<!-- 숫자 버튼 -->
+								<th:block
+										th:each="page : ${ #numbers.sequence(paging.startPage, paging.endPage)}">
+									<button
+											th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${page}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '\''"
+											th:text="${ page }" th:disabled="${ paging.page eq page }" th:classappend="${paging.page eq page} ? 'on' : ''">
+									</button>
+								</th:block>
+
+								<!-- 다음 페이지로 이동 -->
+								<button class="next"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${paging.page + 1}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '\''"
+										th:disabled="${ paging.page >= paging.maxPage }">&gt;</button>
+
+								<!-- 맨 끝으로 이동 -->
+								<button class="end"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${paging.maxPage}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '\''">&gt;&gt;</button>
+
+							</th:block>
+
+							<th:block
+									th:if="${ paging.searchCondition == null  || paging.searchValue == null }">
+								<!-- 맨 앞으로 이동 -->
+								<button class="front"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=1\''">&lt;&lt;</button>
+
+								<!-- 이전 페이지로 이동 -->
+								<button class="prev"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${paging.page - 1}} + '\''"
+										th:disabled="${ paging.page <= 1 }">&lt;</button>
+
+								<!-- 숫자 버튼 -->
+								<th:block
+										th:each="page : ${ #numbers.sequence(paging.startPage, paging.endPage)}">
+									<button
+											th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${page}} + '\''"
+											th:text="${ page }" th:disabled="${ paging.page eq page }" th:classappend="${paging.page eq page} ? 'on' : ''">
+									</button>
+								</th:block>
+
+								<!-- 다음 페이지로 이동 -->
+								<button class="next"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${paging.page + 1}} + '\''"
+										th:disabled="${ paging.page >= paging.maxPage }">&gt;</button>
+
+								<!-- 맨 끝으로 이동 -->
+								<button class="end"
+										th:onclick="'location.href=\'/manager/ordertab/order/order_list?page=' + @{${paging.maxPage}} + '\''">&gt;&gt;</button>
+							</th:block>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

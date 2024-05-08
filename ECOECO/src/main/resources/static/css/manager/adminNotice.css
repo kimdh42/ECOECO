@@ -1,0 +1,19 @@
+#noticeCategory {
+    width: 100%;
+}
+#noticeSubCategory {
+    width: 100%;
+}
+.scrollable table, .scrollable img {
+    margin-bottom: 40px;
+}
+.centered-image {
+    width: 500px;
+    height: 350px;
+    display: block;
+    margin: 0 auto;
+    border: 1px solid black;
+}
+.write.nshadow {
+    margin-top: -40px;
+}

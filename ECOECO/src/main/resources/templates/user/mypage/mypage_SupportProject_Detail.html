@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypage_SupportProject_Dtail</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <div>
+        <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+
+        <div style="float: left; width: 60%; height: 850px;">
+            <div>
+                <h2>주문내역 상세조회</h2>
+                <hr style="text-align: left; margin-left: 0px; width: 90%;"><br>
+            </div>
+
+            <form id="supportProject_DetailForm" action="/user/mypage/mypage_SupportProject_Detail">
+
+                <div class="productImg" style="float: left; margin-left: 30px; margin-right: 50px;">
+                    <em class="inputProductImage" style="background-image: url();"></em>
+                </div>
+
+                <div style="float: left;">
+                    <p><strong th:text="${projectDTO.projectName}"></strong></p>                        <!-- projectName -->
+                    <input type="hidden" id="orderNo" th:value="${projectDTO.maker.user.order.orderNo}">
+                    <p th:text="'주문번호 : ' + ${projectDTO.maker.user.order.orderNo}"></p>             <!-- orderNo -->
+                    <p th:text="'주문금액 : ' + ${projectDTO.maker.user.order.orderPrice}"></p>              <!-- orderPrice -->
+                    <p th:text="'주문상태 : ' + ${projectDTO.maker.user.order.orderStatus}"></p>             <!-- orderStatus -->
+                    <p th:text="'수령인 : ' + ${projectDTO.maker.user.order.recipient}"></p>                <!-- recipient -->
+                    <p th:text="'연락처 : ' + ${projectDTO.maker.user.order.orderPhone}"></p>               <!-- orderPhone -->
+                    <p th:text="'배송지 : ' + ${projectDTO.maker.user.order.orderAdd}"></p>                 <!-- orderAdd -->
+                </div>
+            </form>
+
+            <form id="refundButtonForm" action="/user/mypage/refundSupportProject" method="post" style="position: relative; top: 33%">
+                <div >
+                    <button type="button" class="refundButton" onclick="openRefundModal()">주문취소</button>
+                </div>
+
+                <div id="refundmodal" class="modal" style="display: none;">
+                    <div class="modal_content">
+                        <p>정말 환불 하시겠습니까?</p>
+                        <button type="submit" id="check_button" onclick="checkRefundModal()">네</button>
+                        <button type="submit" id="cancel_button" onclick="closeRefundModal()">아니오</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script type="text/javascript" th:src="@{/js/user/mypage/mypage.js}"></script>
+
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

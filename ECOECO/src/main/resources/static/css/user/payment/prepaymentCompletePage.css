@@ -1,0 +1,25 @@
+.content {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 1440px;
+    text-align: center;
+
+}
+
+.content img {
+    width: 600px;
+}
+
+.text1 {
+    font-size: 50px;
+    color: #3bc780;
+}
+.text2 {
+    font-size: 30px;
+}
+.complete-button {
+    width: 80px;
+    height: 40px;
+    margin-bottom: 100px;
+}

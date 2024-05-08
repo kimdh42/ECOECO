@@ -1,0 +1,197 @@
+<head>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/manager/paymentmember.css}">
+</head>
+
+<div th:replace="~{/manager/common/header.html}"></div>
+<div th:replace="~{/manager/common/gnb.html}"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li class="btn_sub on">
+					<a href="#">회원 관리</a>
+					<ul class="sub_menu" style="display: block;">
+						<li class="on"><a href="/manager/customer/customer_list">회원 정보</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/project/project_new_list">프로젝트 관리</a>
+				</li>
+				<li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+
+			</ul>
+		</aside>
+		<div class="container clearfix">
+			<div class="content">
+
+				<div class="list_tit">
+					<h3>회원정보</h3>
+				</div>
+						<div class="write nshadow">
+						</div>
+
+				<form action="/manager/customer/delete" method="post">
+					<input type="hidden" id="userNoInput" name="userNo" th:value="${customerInfo.userNo}">
+					<div class="list">
+
+						<div class="search_wrap">
+
+							<div class="scrollable">
+<!--								<div class="photoall">-->
+<!--									<div class="pimgdiv">-->
+<!--										&lt;!&ndash;                                    <img class="pimg" src="../images/JJANG3.PNG" alt="프로필 사진">&ndash;&gt;-->
+<!--									</div>-->
+<!--								</div>-->
+
+<!--								<button class="pdel">사진삭제</button>-->
+
+								<table class="search_list">
+									<caption>상세보기</caption>
+									<colgroup>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">회원번호</th>
+										<th scope="col">이름</th>
+										<th scope="col">아이디</th>
+										<th scope="col">등급</th>
+										<th scope="col">생년월일</th>
+										<th scope="col">성별</th>
+										<th scope="col">가입일</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td th:text="${ customerInfo.userNo }"></td>
+										<td th:text="${ customerInfo.userName }"></td>
+										<td th:text="${ customerInfo.userId }"></td>
+										<td>
+											<select id="userGradeSelect">
+												<option value="1" th:selected="${customerInfo.userGrade == 1}">플1</option>
+												<option value="2" th:selected="${customerInfo.userGrade == 2}">플2</option>
+												<option value="3" th:selected="${customerInfo.userGrade == 3}">플3</option>
+											</select>
+										</td>
+
+										<td th:text="${ customerInfo.userBirth }"></td>
+										<td th:text="${ customerInfo.userGender }"></td>
+										<td th:text="${ customerInfo.userDate }"></td>
+									</tr>
+
+
+
+
+									</tbody>
+								</table>
+								<br><br><br>
+								<table class="search_list">
+									<caption>상세보기</caption>
+									<colgroup>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+									</colgroup>
+									<thead>
+									<tr>
+<!--										<th scope="col">보유포인트</th>-->
+										<th scope="col">이메일</th>
+										<th scope="col">전화번호</th>
+										<th scope="col">주소</th>
+									</tr>
+									</thead>
+									<tbody class="td_bcw">
+									<tr>
+<!--										<td><input type="text" id="userPointInput" th:value="${customerInfo.userPoint}"></td>-->
+										<td th:text="${ customerInfo.userEmail }"></td>
+										<td th:text="${ customerInfo.userPnum }"></td>
+										<td th:text="${ customerInfo.userAddress }"></td>
+									</tr>
+									</tbody>
+								</table>
+								<br><br><br>
+								<table class="search_list">
+									<caption>상세보기</caption>
+									<colgroup>
+										<col>
+										<col>
+										<col>
+										<col>
+										<col>
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">은행명</th>
+										<th scope="col">계좌번호</th>
+									</tr>
+									</thead>
+									<tbody class="td_bcw">
+									<tr>
+										<td th:text="${ customerInfo.bankAccount.bankName }"></td>
+										<td th:text="${ customerInfo.userAccount }"></td>
+
+									</tr>
+									</tbody>
+								</table>
+
+								<br><br><br>
+							</div>
+							<div class="write nshadow">
+								<div class="write_btn align_c mt35">
+									<button class="btn" onclick="history.back()">목록</button>
+									<button type="button" class="btn btn_modify" th:onclick="submitCustomerInfo()">정보 저장</button>
+									<button type="submit" class="btn btn_del" onclick="deleteUser()">회원 삭제</button>
+								</div>
+							</div>
+						</div>
+
+					</div>
+				</form>
+		</div>
+	</div>
+</div>
+<form id="updateForm" action="/manager/customer/update_grade" method="post"></form>
+<script>
+	function submitCustomerInfo() {
+
+		const userNo = document.getElementById("userNoInput").value;
+
+		// 변경된 회원 등급 가져오기
+		const userGrade = document.getElementById("userGradeSelect").value;
+
+		if (!confirm("회원 등급을 " + userGrade + "으로 변경합니다. \n 진행하시겠습니까?")) {
+		} else {
+			// userNo를 hidden input에 설정하여 폼 제출
+			let updateForm = document.getElementById('updateForm');
+			// supportReviewsNo를 전달할 hidden input 요소 생성
+			let input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = 'userNo';
+			input.value = userNo;
+			updateForm.appendChild(input);
+
+			// userGrade를 전달할 hidden input 요소 생성
+			let listTypeInput = document.createElement('input');
+			listTypeInput.type = 'hidden';
+			listTypeInput.name = 'userGrade';
+			listTypeInput.value = userGrade;
+			updateForm.appendChild(listTypeInput);
+
+			// 폼 제출
+			updateForm.submit();
+		}
+	}
+</script>
+</body>
+</html>

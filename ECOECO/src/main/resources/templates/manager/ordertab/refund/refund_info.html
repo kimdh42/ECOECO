@@ -1,0 +1,158 @@
+<div th:replace="~{/manager/common/header.html}"></div>
+<div th:replace="~{/manager/common/gnb.html}"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+				<li><a href="/manager/project/project_new_list">프로젝트 관리</a></li>
+				<li class="btn_sub on">
+					<a href="#">결제 및 정산 관리</a>
+					<ul class="sub_menu" style="display: block;">
+						<li><a href="/manager/ordertab/order/order_list">주문</a></li>
+						<li><a href="/manager/ordertab/payment/payment_list">결제 현황</a></li>
+						<li><a href="/manager/ordertab/settlement/settlement_list">정산대기</a></li>
+						<li class="on"><a href="/manager/ordertab/refund/refund_list">취소 환불</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+
+			</ul>
+		</aside>		
+		<div class="container clearfix">
+			<div class="content">
+
+				<div class="list_tit">
+					<h3>환불정보</h3>
+				</div>
+				<div class="list">
+					<div class="search_wrap">
+						<div class="scrollable">
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">환불번호</th>
+										<th scope="col">이름</th>
+										<th scope="col">아이디</th>
+										<th scope="col">결제금액</th>
+										<th scope="col">환불상태</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+								<tr>
+									<td th:text="${ refundInfo.refundNo }"></td>
+									<td th:text="${ refundInfo.payment.orderer.userName }"></td>
+									<td th:text="${ refundInfo.payment.orderer.userId }"></td>
+									<td th:text="${#numbers.formatInteger(refundInfo.payment.paymentPrice,1,'COMMA')}"></td>
+									<td th:text="${ refundInfo.refundStatus }"></td>
+								</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">프로젝트번호</th>
+										<th scope="col">프로젝트명</th>
+										<th scope="col">환불은행</th>
+										<th scope="col">환불계좌</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+								<tr>
+									<td th:text="${ refundInfo.payment.projectNo }"></td>
+									<td th:text="${ refundInfo.payment.project.projectName }"></td>
+									<td th:text="${ refundInfo.payment.getOrderer.bankAccount.bankName }"></td>
+									<td th:text="${ refundInfo.payment.getOrderer.userAccount }"></td>
+								</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">환불 신청일</th>
+										<th scope="col">환불 완료일(환불 거절일)</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr>
+										<td th:text="${#temporals.format(refundInfo.refundRequestDate, 'yyyy-MM-dd HH:mm')}"></td>
+										<td th:text="${#temporals.format(refundInfo.refundDate, 'yyyy-MM-dd HH:mm')}">
+									</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+						</div>
+						<form id="updateForm" action="/manager/ordertab/refund/updateRefund" method="post"></form>
+						<div class="write nshadow">
+							<div class="write_btn align_c mt35">
+								<button class="btn" onclick="history.go(-1)">목록</button>
+								<button class="btn btn_del" type="button"
+										th:attr="data-refundNo=${ refundInfo.refundNo }, data-type='환불거절'"
+										onclick="cahngeStatus(this.getAttribute('data-refundNo'), this.getAttribute('data-type'))">환불 거절
+								</button>
+								<button class="btn btn_modify" type="button"
+										th:attr="data-refundNo=${ refundInfo.refundNo }, data-type='환불승인'"
+										onclick="cahngeStatus(this.getAttribute('data-refundNo'), this.getAttribute('data-type'))">환불 진행
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function cahngeStatus(refundNo, type) {
+
+		if (!confirm("해당 환불 요청을 " + type + "합니다. \n 진행하시겠습니까?")) {
+		} else {
+			// refundNo를 hidden input에 설정하여 폼 제출
+			let updateForm = document.getElementById('updateForm');
+				// refundNo를 전달할 hidden input 요소 생성
+				let input = document.createElement('input');
+				input.type = 'hidden';
+				input.name = 'refundNo';
+				input.value = refundNo;
+				updateForm.appendChild(input);
+
+				// refundStatus를 전달할 hidden input 요소 생성
+				let listTypeInput = document.createElement('input');
+				listTypeInput.type = 'hidden';
+				listTypeInput.name = 'refundStatus';
+				listTypeInput.value = type;
+				updateForm.appendChild(listTypeInput);
+
+			// 폼 제출
+			updateForm.submit();
+		}
+	}
+</script>
+</body>
+</html>

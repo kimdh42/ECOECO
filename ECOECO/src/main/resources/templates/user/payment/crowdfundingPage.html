@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/payment/crowdfundingPage.css}">
+    <script th:src="@{/js/main/user/header.js}"></script>
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+    <script th:src="@{/js/payment/user/crowdfundingPage.js}"></script>
+
+    <title>펀딩 후원(주문) 페이지</title>
+
+</head>
+
+<body>
+<div th:replace="~{/user/common/header::header}"></div>
+
+<div class="container">
+    <div class="contents_wrap">
+        <form name="orderForm" action="/user/payment/registOrder" method="post" onSubmit="return CheckForm()">
+
+            <th:block sec:authorize="isAuthenticated()">
+                <input type="hidden" name="userNo" id="loginUserNo" th:value="${#authentication.principal.userNo}">
+            </th:block>
+                <input type="hidden" name="projectNo" id="projectNo" th:value="${projectNo}">
+                <input type="hidden" name="orderCategory" id="orderCategory" th:value="${orderCategory}">
+
+            <div class="info hidden" id="deliveryInfo">
+                <h3>배송정보</h3>
+                <div>
+                    <label for="buyerName">주문자</label>
+                    <input type="text" id="buyerName" name="buyerName"/>
+                </div>
+                <div>
+                    <label for="buyerTel">연락처</label>
+                    <input type="text" id="buyerTel" name="buyerTel"/>
+                </div>
+                <div>
+                    <label for="zipCode">배송지</label>
+                    <table>
+                        <tr>
+                            <td>우편번호</td>
+                            <td><input type="text" name="zipCode" id="zipCode" readonly></td>
+                            <td><input type="button" value="검색" id="searchZipCode"></td>
+                        </tr>
+                        <tr>
+                            <td>주소</td>
+                            <td><input type="text" name="address1" id="address1" readonly></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>상세주소</td>
+                            <td><input type="text" name="address2" id="address2"></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+            <script>
+
+                const $searchZipCode = document.getElementById("searchZipCode");
+
+                $searchZipCode.onclick = function () {
+                    new daum.Postcode({
+                        oncomplete: function (data) {
+                            document.getElementById("zipCode").value = data.zonecode;
+                            document.getElementById("address1").value = data.address;
+                            document.getElementById("address2").focus();
+                        }
+                    }).open();
+                }
+            </script>
+
+
+            <h3 class="text1">펀딩 후원 정보</h3>
+            <div class="purchase_info">
+                <img src="/images/user/main/flower1.png" alt="상품 썸네일">
+                <p id="projectName"></p>
+                <select id="rewardNo" name="rewardNo" class="select_box">
+                    <option value="">-&#45;&#45;리워드 선택-&#45;&#45;</option>
+                </select>
+                <input type="hidden" id="orderPrice" name="orderPrice">
+            </div>
+
+            <!--<h3>쿠폰적용</h3>-->
+            <!--<div class="selection_box">-->
+            <!--    <select id="option">-->
+            <!--        <option value="null">-&#45;&#45;선택안함-&#45;&#45;</option>-->
+            <!--        <option value="no1">회원가입 축하쿠폰 1000원</option>-->
+            <!--        <option value="no2">첫결제 응원쿠폰 3000원</option>-->
+            <!--        <option value="no3">생일자 축하쿠폰 5000원</option>-->
+            <!--    </select>-->
+            <!--</div>-->
+
+            <div class="border">
+                <h3>총 결제금액</h3>
+                <p>상품 금액</p>
+                <p id="price">0원</p>
+                <p>할인 금액</p>
+                <p class="discount">0원</p>
+                <h4>총1건</h4>
+                <p id="totalPrice">0원</p>
+            </div>
+
+
+            <div>
+                <h3>결제방법</h3>
+                <input type="radio" name="paymentCategory" id="paymentCategoryKakao" onclick="showDiv()" value="즉시결제">
+                <img width="80px" src="/images/user/main/pay.png" alt="카카오페이 이미지">
+                <input type="radio" name="paymentCategory" id="paymentCategoryPre" onclick="showDiv()" value="예약결제">
+                <span id="paymentCategoryPreText">예약결제</span>
+            </div>
+
+            <div class="table-container hidden" id="bankInfo">
+                <div class="table-row">
+                    <div class="table-cell label">은행명</div>
+                    <div class="table-cell">
+                        <select id="accountNo" name="accountNo" class="input-field">
+                        </select>
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell label">계좌번호</div>
+                    <div class="table-cell">
+                        <input type="text" id="buyerAccount" name="buyerAccount" class="input-field"
+                               placeholder="계좌번호를 입력하세요">
+                    </div>
+                </div>
+                <div class="table-row">
+                    <div class="table-cell label">예금주</div>
+                    <div class="table-cell">
+                        <input type="text" id="buyerName2" name="buyerName2" class="input-field"
+                               placeholder="예금주를 입력하세요">
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-container">
+                <button class="payment-button">결제</button>
+                <button class="cancel-button" type="button" onclick="history.go(-1)" >취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:replace="/user/common/footer.html"></div>
+
+</body>
+</html>

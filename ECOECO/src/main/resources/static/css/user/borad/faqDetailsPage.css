@@ -1,0 +1,15 @@
+.details_title {
+    width: 100%;
+    height: auto;
+    margin-left: 300px;
+}
+
+.details {
+    max-width: 1440px;
+    height: auto;
+}
+
+.details_img {
+    width: 60%;
+    height: auto;
+}

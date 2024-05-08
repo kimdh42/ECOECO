@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.recycle.ecoeco.board.usGreen.model.dao.manager.AdminUsGreenMapper">
+
+    <resultMap id="usGreenResultMap" type="com.recycle.ecoeco.board.usGreen.model.dto.UsGreenDTO">
+        <id property="comuNo" column="comuNo"/>
+        <association property="writer" resultMap="userResultMap"/>
+        <association property="like" resultMap="usGreenLikeMap"/>
+        <association property="comment" resultMap="usGreenCommentMap"/>
+        <association property="commentLike" resultMap="UsGreenCommentLikeMap"/>
+    </resultMap>
+
+    <resultMap id="userResultMap" type="com.recycle.ecoeco.membership.model.dto.UserInfoDTO">
+        <id property="userNo" column="userNo"/>
+    </resultMap>
+
+    <resultMap id="usGreenLikeMap" type="com.recycle.ecoeco.board.usGreen.model.dto.UsGreenGoodDTO">
+        <id property="likeNo" column="likeNo"/>
+    </resultMap>
+
+    <resultMap id="usGreenCommentMap" type="com.recycle.ecoeco.board.usGreen.model.dto.UsGreenCommentDTO">
+        <id property="commentNo" column="commentNo"/>
+    </resultMap>
+
+    <resultMap id="UsGreenCommentLikeMap" type="com.recycle.ecoeco.board.usGreen.model.dto.UsGreenCommentGoodDTO">
+        <id property="cLikeNo" column="cLikeNo"/>
+    </resultMap>
+
+
+    <!-- 우리가그린 조회 리스트 카운트 -->
+    <select id="selectTotalCount" resultType="_int" parameterType="hashmap">
+        SELECT
+        COUNT(*)
+        FROM
+        US_GREEN g
+        JOIN
+        USER_INFO u ON (g.userNo = u.userNo)
+        <where>
+            <if test="searchCondition == 'comuCategory'">
+                AND g.comuCategory LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'comuTitle'">
+                AND g.comuTitle LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'writer'">
+                AND u.userName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <!-- searchConditionDate에 따른 조건 -->
+            <if test="searchConditionDate == 'noticeDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND g.comuDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ g.comuDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ g.comuDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            AND
+            g.comuStatus = 'Y'
+        </where>
+    </select>
+
+    <!-- 우리가그린 리스트 조회 -->
+    <select id="selectUsGreenList" resultMap="usGreenResultMap">
+        SELECT
+        g.comuNo,
+        g.comuCategory,
+        g.comuTitle,
+        g.comuDate,
+        u.userName
+        FROM
+        US_GREEN g
+        JOIN
+        USER_INFO u ON (g.userNo = u.userNo)
+        <where>
+            <if test="searchCondition == 'comuCategory'">
+                AND g.comuCategory LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'comuTitle'">
+                AND g.comuTitle LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <if test="searchCondition == 'writer'">
+                AND u.userName LIKE CONCAT('%', #{ searchValue }, '%')
+            </if>
+            <!-- searchConditionDate에 따른 조건 -->
+            <if test="searchConditionDate == 'comuDate'">
+                <choose>
+                    <when test="searchDate1 != '' and searchDate1 != null and searchDate2 != '' and searchDate2 != null">
+                        AND g.comuDate BETWEEN #{ searchDate1 } AND #{ searchDate2 }
+                    </when>
+                    <when test="(searchDate1 != '' and searchDate1 != null and searchDate2 == '') or (searchDate1 != '' and searchDate1 != null and searchDate2 != null)">
+                        AND <![CDATA[ g.comuDate >= #{ searchDate1 } ]]>
+                    </when>
+                    <when test="(searchDate2 != '' and searchDate2 != null and searchDate1 == '') or (searchDate2 != '' and searchDate2 != null and searchDate1 != null)">
+                        AND <![CDATA[ g.comuDate <= #{ searchDate2 } ]]>
+                    </when>
+                </choose>
+            </if>
+            AND
+            g.comuStatus = 'Y'
+        </where>
+        ORDER BY
+        g.comuNo DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <!-- 공지사항 상세 조회 -->
+    <select id="selectUsGreenDetail" resultMap="usGreenResultMap">
+        SELECT
+        g.comuNo,
+        g.comuCategory,
+        g.comuTitle,
+        g.comuDetail,
+        g.comuDate,
+        u.userName
+        FROM
+        US_GREEN g
+        JOIN
+        USER_INFO u ON (g.userNo = u.userNo)
+        WHERE
+        g.comuNo = #{comuNo}
+    </select>
+
+    <update id="deleteUsGreen">
+        UPDATE
+        US_GREEN
+        SET
+        comuStatus = 'N'
+        WHERE
+        comuNo = #{ comuNo }
+    </update>
+
+</mapper>

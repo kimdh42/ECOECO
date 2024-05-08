@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypage_Myproject</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 900px;">
+        <div>
+            <h2>후원한 프로젝트</h2>
+            <hr style="text-align: left; margin-left: 0px; width: 90%;"><br>
+        </div>
+
+        <form id="mySupportProjectForm" action="/user/mypage/mypage_SupportProject">
+            <table id="supportProject_List">
+                <tr class="supportProject_List_title">
+                    <th scope="col">프로젝트번호</th>
+                    <th scope="col">프로젝트</th>
+                    <th scope="col">메이커</th>
+                    <th scope="col">결제금액</th>
+                    <th scope="col">성공여부</th>
+                    <th scope="col">결제상태</th>
+                    <th scope="col">배송여부</th>
+                </tr>
+                <tr th:each="projectDTO: ${projectDTO}" class="supportProject_List_detail" th:onclick="|location.href='/user/mypage/mypage_SupportProject_Detail?projectNo=${projectDTO.projectNo}'|" style="cursor: pointer;">
+                    <td th:text="${projectDTO.projectNo}"></td>         <!-- projectNo -->
+                    <td th:text="${projectDTO.projectName}"></td>       <!-- projectName -->
+                    <td th:text="${projectDTO.maker.makerName}"></td>            <!-- userName -->
+                    <td th:text="${projectDTO.maker.user.payment.paymentPrice}"></td>      <!-- paymentPrice -->
+                    <td th:text="${projectDTO.projectSorN}"></td>       <!-- projectSorN -->
+                    <td th:text="${projectDTO.maker.user.order.paymentStatus}"></td>     <!-- paymentStatus -->
+                    <td th:text="${projectDTO.deliveryYN}"></td>        <!-- deliveryYN -->
+                </tr>
+            </table>
+        </form>
+    </div>
+    </div>
+
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

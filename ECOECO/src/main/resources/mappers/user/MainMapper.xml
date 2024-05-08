@@ -1,0 +1,743 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 인터페이스 메퍼 경로 -->
+<mapper namespace="com.recycle.ecoeco.makerProject.model.dao.user.MainMapper">
+    <!-- resultMap : 프로젝트 DTO 경로
+    id : generalProjectResultMap : 공용 프로젝트 ResultMap -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ProjectDTO" id="generalProjectResultMap" >
+        <!-- property : 필드값
+         column : 테이블 컬럼값 -->
+        <id property="projectNo" column="projectNo"/>
+        <association property="maker" resultMap="makerResultMap"/>
+        <association property="category" resultMap="categoryResultMap"/>
+        <collection property="projectThumbnailDTO" resultMap="projectThumbnailResultMap"/>
+    </resultMap>
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.RewardDTO" id="rewardResultMap" >
+        <!-- .yml(야물)파일에서 auto-mapping-behavior: full
+        가 작성되어 있어서 아래 칼럼값을 하나만 적어주면 됨 -->
+        <id property="rewardNo" column="rewardNo"/>
+    </resultMap>
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.ProjectThumbnailDTO" id="projectThumbnailResultMap" >
+
+        <id property="projectImgNo" column="projectImgNo"/>
+    </resultMap>
+
+    <!-- 필요한 메이커 정보를 불러오기 위해 resultMap 작성
+    type 은 메이커 정보가 들어있는 MakerDTO 경로 -->
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.MakerDTO" id="makerResultMap" >
+
+        <id property="makerNo" column="makerNo"/>
+    </resultMap>
+
+    <resultMap type="com.recycle.ecoeco.makerProject.model.dto.CategoryDTO" id="categoryResultMap" >
+
+        <id property="categoryCode" column="categoryCode"/>
+    </resultMap>
+
+    <!-- main 시작 -->
+    <!--  id="mainNewList" : 매퍼 인터페이스 메소드명 mainNewList()와 동일하게 -->
+    <!-- 신규 프로젝트 -->
+    <select id="mainNewList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            startDate BETWEEN date_add(now(), interval -1 month) AND now()
+        ORDER BY
+            startDate desc
+        LIMIT 8
+    </select>
+
+    <!-- 인기 프로젝트 -->
+    <select id="mainPopularList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            (a.achievedAmount * 100 / a.targetAmount) >= 200
+        ORDER BY
+            (a.achievedAmount * 100 / a.targetAmount) desc
+        LIMIT 8
+    </select>
+
+    <!-- 오픈예정 프로젝트 -->
+    <select id="mainOpenList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 6
+            and
+            startDate BETWEEN date_add(now(), interval +1 day) AND date_add(now(), interval +2 week)
+        ORDER BY
+            startDate asc
+        LIMIT 8
+    </select>
+
+    <!-- 마감임박 프로젝트 -->
+    <select id="mainCloseList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            endDate BETWEEN now() AND date_add(now(), interval +2 week)
+        ORDER BY
+            endDate desc
+        LIMIT 8
+    </select>
+
+    <!-- main 끝 -->
+
+    <!-- category 시작 -->
+    <!-- 리빙 -->
+    <select id="livingList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 1
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 가전 -->
+    <select id="applianceList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 2
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 뷰티 -->
+    <select id="beautyList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 3
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 의류 -->
+    <select id="clothingList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 4
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 잡화 -->
+    <select id="generalItemsList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 5
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 굿즈 -->
+    <select id="goodsList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 6
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 영화/공연 -->
+    <select id="entertainmentList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 7
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 기타 -->
+    <select id="otherList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            a.categoryCode = 8
+        ORDER BY
+            startDate desc
+    </select>
+    <!-- category 끝 -->
+
+
+    <!--  id="newList" : 매퍼 인터페이스 메소드명 newList()와 동일하게 -->
+    <!-- section 시작 -->
+    <!-- 신규 프로젝트 -->
+    <select id="newList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            startDate BETWEEN date_add(now(), interval -1 month) AND now()
+        ORDER BY
+            startDate desc
+    </select>
+
+    <!-- 인기 프로젝트 -->
+    <select id="popularList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            (a.achievedAmount * 100 / a.targetAmount) >= 200
+        ORDER BY
+            (a.achievedAmount * 100 / a.targetAmount) desc
+    </select>
+
+    <!-- 오픈예정 프로젝트 -->
+    <select id="openList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 6
+            and
+            startDate BETWEEN date_add(now(), interval +1 day) AND date_add(now(), interval +2 week)
+        ORDER BY
+            startDate asc
+    </select>
+
+    <!-- 마감임박 프로젝트 -->
+    <select id="closeList" resultMap="generalProjectResultMap">
+        SELECT
+            a.projectNo
+            ,a.projectName
+            ,a.projectStatus
+            ,a.projectSorN
+            ,a.deliveryYN
+            ,a.serviceCharge
+            ,a.targetAmount
+            ,a.requestDate
+            ,a.approvalDate
+            ,a.petitionDate
+            ,a.startDate
+            ,a.endDate
+            ,a.achievedAmount
+            ,a.dueDate
+            ,a.categoryCode
+            ,pt.projectImageSaveName
+            ,pt.projectImagePath
+            ,m.makerNo
+            ,m.makerName
+            ,m.email
+            ,m.phone
+            ,m.userNo
+            ,c.categoryCode
+            ,c.categoryName
+        FROM
+            project a
+        JOIN
+            project_thumbnail pt ON (a.projectNo = pt.projectNo)
+        JOIN
+            maker m ON (a.projectNo = m.projectNo)
+        JOIN
+            category c ON (a.categoryCode = c.categoryCode)
+        WHERE
+            projectStatus = 7
+            and
+            endDate BETWEEN now() AND date_add(now(), interval +1 week)
+        ORDER BY
+            endDate desc
+    </select>
+    <!-- section 끝 -->
+
+</mapper>

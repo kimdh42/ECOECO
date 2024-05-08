@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">-->
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+</head>
+
+<!--
+    <div th:replace="~{/user/common/header.html::header}"></div>(헤더 적용할 html에 적용, 위치는 body 최상단)
+    <link rel="stylesheet" type="text/css" th:href="@{header.html css 경로작성}"> (header.html이 아닌 헤더 적용할 파일에 header.css 걸어줘야함)
+ -->
+
+<body>
+    <div th:fragment="header">
+        <header>
+            <div class="top">
+               <button class="login ljBtn btn" onclick="location.href='/login'">로그인</button>
+               <button class="join ljBtn btn" onclick="location.href='/joinus'">회원가입</button>
+                <button class="project btn" onclick="location.href='/user/project/projectInfo/projectInfo'">프로젝트 만들기</button>
+            </div>
+            <div class="middle">
+                <div class="logo">
+                    <a href="/">
+                        <img src="/images/user/common/ecoeco_logo.png" alt="에코에코 로고">
+                    </a>
+                </div>
+            </div>
+            <div class="bottom">
+                <nav class="gnb">
+                    <ul class="gnb-ul">
+                        <li class="gnb-cate gnb-li">카테고리</li>
+                        <li class="gnb-li"><a th:href="@{/user/section(section=popular)}">인기</a></li>
+                        <li class="gnb-li"><a th:href="@{/user/section(section=new)}">신규</a></li>
+
+                        <li class="gnb-li"><a th:href="@{/user/section(section=close)}">마감임박</a></li>
+                        <li class="gnb-li"><a th:href="@{/user/section(section=open)}">오픈예정</a></li>
+                        <li class="gnb-community gnb-li"><a href="">커뮤니티</a></li>
+                        <li class="gnb-li"><input type="text" class="search" placeholder="🔍&nbsp; Search"></li>
+                    </ul>
+                    <div class="sub-category-area">
+                        <ul class="sub-category">
+                            <li><a th:href="@{/user/category(category=1)}">리빙</a></li>
+                            <li><a th:href="@{/user/category(category=2)}">가전</a></li>
+                            <li><a th:href="@{/user/category(category=3)}">뷰티</a></li>
+                            <li><a th:href="@{/user/category(category=4)}">의류</a></li>
+                            <li><a th:href="@{/user/category(category=5)}">잡화</a></li>
+                            <li><a th:href="@{/user/category(category=6)}">굿즈</a></li>
+                            <li><a th:href="@{/user/category(category=7)}">영화/공연</a></li>
+                            <li><a th:href="@{/user/category(category=8)}">기타</a></li>
+                        </ul>
+                    </div>
+                    <div class="sub-community-area">
+                        <ul class="sub-community">
+                            <li><a href="/user/usgreen/usGreenWritePage">우리가 그린</a></li>
+                            <li><a href="/user/borad/notice">공지사항</a></li>
+                            <li><a href="/user/borad/faqPage">FAQ</a></li>
+                            <li><a href="">이벤트</a></li>
+                        </ul>
+                    </div>      
+                </nav>
+            </div>
+        </header>
+        <script type="text/javascript" th:src="@{/js/user/mypage/headerAfterLogin.js}"></script>
+        <script src="/js/user/common/header.js"></script>
+        <!-- 스크립트 2개 div 안쪽으로 밀어넣었음-->
+    </div>
+
+
+
+</body>
+</html>

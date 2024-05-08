@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypage_MyprojectList</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 850px;">
+        <div>
+            <h2>나의 프로젝트</h2>
+            <hr style="text-align: left; margin-left: 0px; width: 90%;"><br>
+        </div>
+        <form id="myProjectListForm" action="/user/mypage/mypage_MyprojectList">
+            <div>
+                <table id="myproject_List_table">
+                    <tr class="myproject_List_title">
+                        <th scope="col">프로젝트번호</th>
+                        <th scope="col">프로젝트명</th>
+                        <th scope="col">수수료</th>
+                        <th scope="col">목표금액</th>
+                        <th scope="col">달성액</th>
+                        <th scope="col">시작일</th>
+                        <th scope="col">종료일</th>
+                        <th scope="col">마감일</th>
+                    </tr>
+                    <tr th:each="projectDTO: ${projectDTO}" class="myproject_List_detail" th:onclick="|location.href='/user/mypage/mypage_MyprojectList_Detail?projectNo=${projectDTO.projectNo}'|" style="cursor: pointer;">
+                        <td th:text="${projectDTO.projectNo}"></td>
+                        <td th:text="${projectDTO.projectName}"></td>
+                        <td th:text="${projectDTO.serviceCharge}"></td>
+                        <td th:text="${projectDTO.targetAmount}"></td>
+                        <td th:text="${projectDTO.achievedAmount}"></td>
+                        <td th:text="${projectDTO.startDate}"></td>
+                        <td th:text="${projectDTO.endDate}"></td>
+                        <td th:text="${projectDTO.dueDate}"></td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+
+    </div>
+
+    <!--        <script type="text/javascript" th:src="@{/js/user/mypage/checkMyInfo.js}"></script>-->
+
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

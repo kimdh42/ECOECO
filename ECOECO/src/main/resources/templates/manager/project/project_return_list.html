@@ -1,0 +1,187 @@
+<div th:replace="/manager/common/header.html"></div>
+<div th:replace="/manager/common/gnb.html"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+				<li class="btn_sub on"><a href="#">프로젝트 관리</a>
+					<ul class="sub_menu" style="display: block;">
+						<li><a href="/manager/project/project_new_list">신규 프로젝트</a></li>
+						<li><a href="/manager/project/project_now_list">진행 프로젝트</a></li>
+						<li><a href="/manager/project/project_end_list">종료 프로젝트</a></li>
+						<li class="on"><a href="/manager/project/project_return_list">반려 프로젝트</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/ordertab/order/order_list">결제 및 정산 관리</a></li>
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+			</ul>
+		</aside>		
+		<div class="container clearfix">
+			<div class="content">
+				<div class="list_tit">
+					<h3>반려 프로젝트 관리</h3>
+				</div>
+				<div class="list">
+					<div class="search_wrap">
+						<form id="searchForm" action="/manager/project/project_return_list">
+							<div class="search table_btn ">
+								<select id="searchCondition" name="searchCondition">
+									<option>검색 조건</option>
+									<option value="projectNo" th:selected="${paging.searchCondition eq 'projectNo'}">프로젝트번호</option>
+									<option value="projectName" th:selected="${paging.searchCondition eq 'projectName'}">프로젝트명</option>
+									<option value="categoryName" th:selected="${paging.searchCondition eq 'categoryName'}">카테고리명</option>
+									<option value="projectStatus" th:selected="${paging.searchCondition eq 'projectStatus'}">프로젝트상태</option>
+								</select>
+								<input type="search" id="searchValue" name="searchValue" th:value="${ paging.searchValue }">
+								<select id="searchConditionDate" name="searchConditionDate">
+									<option>날자 조건</option>
+									<option value="requestDate" th:selected="${paging.searchConditionDate eq 'requestDate'}">요청일</option>
+									<option value="petitionDate" th:selected="${paging.searchConditionDate eq 'petitionDate'}">반려일</option>
+									<option value="startDate" th:selected="${paging.searchConditionDate eq 'startDate'}">시작일</option>
+								</select>
+								<input type="date" name="searchDate1" id="searchDate1" th:value="${paging.searchDate1 != null} ? ${paging.searchDate1} : ''"> ~
+								<input type="date" name="searchDate2" id="searchDate2" th:value="${paging.searchDate2 != null} ? ${paging.searchDate2} : ''">
+								<div class="r_btn">
+									<button class="btn btn_search">조회</button>
+								</div>
+							</div>
+						</form>
+
+						<div class="result table_btn">
+							<p class="txt">총 <span th:text="${paging.totalCount}"></span>건</p>
+						</div>
+						<div class="scrollable">
+							<table class="search_list">
+								<caption>검색결과</caption>
+								<colgroup>
+									<col style="width:5%;">
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">프로젝트번호</th>
+										<th scope="col">프로젝트명</th>
+										<th scope="col">카테고리</th>
+										<th scope="col">프로젝트상태</th>
+										<th scope="col">요청일</th>
+										<th scope="col">반려일</th>
+										<th scope="col">시작일</th>
+									</tr>
+								</thead>
+								<tbody>
+								<tr th:each="project : ${ projectList }">
+									<td th:text= "${ project.projectNo }"></td>
+									<td><a th:href="@{/manager/project/project_detail(projectNo=${ project.projectNo }, listType=${ paging.listType })}" th:text="${ project.projectName }"></a></td>
+									<td>
+										<th:block th:switch="${project.categoryCode}">
+											<p th:case="1">리빙</p>
+											<p th:case="2">가전</p>
+											<p th:case="3">뷰티</p>
+											<p th:case="4">의류</p>
+											<p th:case="5">잡화</p>
+											<p th:case="6">굿즈</p>
+											<p th:case="7">영화/공연</p>
+											<p th:case="8">기타</p>
+										</th:block>
+									</td>
+									<td>
+										<th:block th:switch="${project.projectStatus}">
+											<p th:case="1" class="txt_red">작성중</p>
+											<p th:case="2" class="txt_red">심사대기</p>
+											<p th:case="3" class="txt_red">심사중</p>
+											<p th:case="4">승인완료</p>
+											<p th:case="5">승인반려</p>
+											<p th:case="6">오픈예정</p>
+											<p th:case="7">진행중</p>
+											<p th:case="8">일시중지</p>
+											<p th:case="9">결제진행중</p>
+											<p th:case="10">배송대기중</p>
+											<p th:case="11">프로젝트마감</p>
+										</th:block>
+									</td>
+									<td th:text="${project.requestDate}"></td>
+									<td th:text="${project.petitionDate}"></td>
+									<td th:text="${project.startDate}"></td>
+								</tr>
+							</table>
+						</div>
+
+						<!-- 페이징 바 -->
+						<div class="pagination mt40" id="paging" align="center">
+
+							<th:block
+									th:if="${ paging.searchCondition != null and paging.searchValue != null }">
+								<!-- 맨 앞으로 이동 -->
+								<button class="front"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=1&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '&searchConditionDate=' + @{${paging.searchConditionDate}} + '&searchDate1=' + @{${paging.searchDate1}} + '&searchDate2=' + @{${paging.searchDate2}} + '\''">&lt;&lt;</button>
+
+								<!-- 이전 페이지로 이동 -->
+								<button class="prev"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${paging.page - 1}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '&searchConditionDate=' + @{${paging.searchConditionDate}} + '&searchDate1=' + @{${paging.searchDate1}} + '&searchDate2=' + @{${paging.searchDate2}} + '\''"
+										th:disabled="${ paging.page <= 1 }">&lt;</button>
+
+								<!-- 숫자 버튼 -->
+								<th:block
+										th:each="page : ${ #numbers.sequence(paging.startPage, paging.endPage)}">
+									<button
+											th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${page}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '&searchConditionDate=' + @{${paging.searchConditionDate}} + '&searchDate1=' + @{${paging.searchDate1}} + '&searchDate2=' + @{${paging.searchDate2}} + '\''"
+											th:text="${ page }" th:disabled="${ paging.page eq page }" th:classappend="${paging.page eq page} ? 'on' : ''">
+									</button>
+								</th:block>
+
+								<!-- 다음 페이지로 이동 -->
+								<button class="next"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${paging.page + 1}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '&searchConditionDate=' + @{${paging.searchConditionDate}} + '&searchDate1=' + @{${paging.searchDate1}} + '&searchDate2=' + @{${paging.searchDate2}} + '\''"
+										th:disabled="${ paging.page >= paging.maxPage }">></button>
+
+								<!-- 맨 끝으로 이동 -->
+								<button class="end"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${paging.maxPage}} + '&searchCondition=' + @{${paging.searchCondition}} + '&searchValue=' + @{${paging.searchValue}} + '&searchConditionDate=' + @{${paging.searchConditionDate}} + '&searchDate1=' + @{${paging.searchDate1}} + '&searchDate2=' + @{${paging.searchDate2}} + '\''">>></button>
+
+							</th:block>
+
+							<th:block
+									th:if="${ paging.searchCondition == null  || paging.searchValue == null }">
+								<!-- 맨 앞으로 이동 -->
+								<button class="front"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=1\''">&lt;&lt;</button>
+
+								<!-- 이전 페이지로 이동 -->
+								<button class="prev"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${paging.page - 1}} + '\''"
+										th:disabled="${ paging.page <= 1 }">&lt;</button>
+
+								<!-- 숫자 버튼 -->
+								<th:block
+										th:each="page : ${ #numbers.sequence(paging.startPage, paging.endPage)}">
+									<button
+											th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${page}} + '\''"
+											th:text="${ page }" th:disabled="${ paging.page eq page }" th:classappend="${paging.page eq page} ? 'on' : ''">
+									</button>
+								</th:block>
+
+								<!-- 다음 페이지로 이동 -->
+								<button class="next"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${paging.page + 1}} + '\''"
+										th:disabled="${ paging.page >= paging.maxPage }">></button>
+
+								<!-- 맨 끝으로 이동 -->
+								<button class="end"
+										th:onclick="'location.href=\'/manager/project/project_return_list?page=' + @{${paging.maxPage}} + '\''">>></button>
+							</th:block>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</body>
+</html>

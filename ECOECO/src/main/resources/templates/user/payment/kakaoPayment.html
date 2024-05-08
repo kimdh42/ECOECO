@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>KakaoPayment</title>
+    <!-- iamport.payment.js -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+</head>
+<body>
+    <script th:inline="javascript">
+        // KakaoDTO 타입으로 생성된 객체 가져와서 결제 요청
+        function getKakaoObject() {
+            fetch('/user/payment/getKakao').then(res => res.json()).then(data => {
+                let kakaoObject = data;
+                console.log('KakaoDTO:', kakaoObject);
+
+                let IMP = window.IMP;
+                IMP.init("imp71238140");
+
+                let today = new Date();
+                // var hours = today.getHours(); // 시
+                // var minutes = today.getMinutes(); // 분
+                // var seconds = today.getSeconds(); // 초
+                // var milliseconds = today.getMilliseconds();
+                // hours = hours.toString();
+                // minutes = minutes.toString();
+                // seconds = seconds.toString();
+                // milliseconds = milliseconds.toString();
+                // var makeMerchantUid = hours + minutes + seconds + milliseconds;
+
+                let makeMerchantUid = today.getTime();
+
+                // console.log("1        " + hours + "   --------" );
+                // console.log("2        " + minutes + "   --------" );
+                // console.log("3        " + seconds + "   --------" );
+                // console.log("4        " + milliseconds + "   --------" );
+                console.log("5        " + makeMerchantUid + "   --------" );
+                function requestPay() {
+                    IMP.request_pay(
+                        // {
+                        //     pg: 'kakaopay.TC0ONETIME',
+                        //     merchant_uid: "IMP" + makeMerchantUid,
+                        //     name: '테스트 결제',
+                        //     amount: 10000,
+                        //     buyer_email: 'Iamport@chai.finance',
+                        //     buyer_name: '아임포트 기술지원팀',
+                        //     buyer_tel: '010-1234-5678',
+                        //     buyer_addr: '서울특별시 강남구 삼성동',
+                        //     buyer_postcode: '123-456'
+                        // }
+                        {
+                            pg: 'kakaopay.TC0ONETIME',
+                            merchant_uid: "IMP" + makeMerchantUid,
+                            name: kakaoObject.name,
+                            amount: kakaoObject.amount,
+                            buyer_email: kakaoObject.buyer_email,
+                            buyer_name: kakaoObject.buyer_name,
+                            buyer_tel: kakaoObject.buyer_tel,
+                            buyer_addr: kakaoObject.buyer_addr,
+                            buyer_postcode: kakaoObject.buyer_postcode,
+                        }
+                        , function (rsp) { // callback
+                            if (rsp.success) {
+                                console.log(rsp);
+                                console.log(rsp.pg_tid);
+                                let apiPayNo = rsp.pg_tid
+                                window.location.href = '/user/payment/kakaoRegistPayment?apiPayNo=' + apiPayNo;
+                            } else {
+                                console.log(rsp);
+                            }
+                        });
+                }
+
+                // 결제 메소드 호출
+                requestPay();
+
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        window.onload = function() {
+            // Ajax로 KakaoDTO 가져오기
+            getKakaoObject()
+        }
+    </script>
+</body>
+</html>

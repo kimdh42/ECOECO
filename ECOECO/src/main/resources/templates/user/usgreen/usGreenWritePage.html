@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/usGreen/usGreenWritePage.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}"/>
+    <script th:src="@{/js/main/user/header.js}"></script>
+    <title>우리가 그린 게시글 페이지</title>
+</head>
+
+<body>
+<div th:replace="~{/user/common/header::header}"></div>
+
+<div class="banner">
+    <h1>우리가 그린</h1>
+    <p>당신의 아이디어를 들려주세요...<br>
+        좋은 글귀가 당신을 기다립니다.</p>
+    <img class="banner-img" src="/images/user/main/main_tree_banner.png">
+</div>
+
+<!-- 상단 셀렉트 박스 -->
+<div class="selection-box1">
+    <select id="option">
+        <option value="all">전체</option>
+        <option value="newIdea">new아이디어</option>
+        <option value="renewal">리뉴얼</option>
+    </select>
+</div>
+
+<div class="section-group">
+
+    <p>귀여운 꽈배기가 들어간 댕기 귀도리 뜨기</p>
+    <img class="profile" src="/images/user/main/profile_image.png" alt="프로필이미지">
+    <p>김우준</p>
+    <p>2024.03.25</p>
+
+    <div class="click-box-group">
+        <!-- 첫 번째 카운트가 증가되는 박스 -->
+        <button class="click-box" id="clickBox1">좋아요 (0)</button>
+
+        <!-- 두 번째 카운트가 증가되는 박스 -->
+        <button class="click-box" id="clickBox2">아쉬워요 (0)</button>
+    </div>
+    <img class="thumbnail" src="/images/user/main/city1.png" alt="썸네일이미지">
+
+</div>
+
+    <!-- 글쓰기 버튼 -->
+    <a href="/user/usgreen/usGreenWritingPage">
+        <button class="button" id="registerButton">글쓰기</button>
+    </a>
+    <!-- 페이지 넘김 버튼 -->
+    <div class="pagination">
+        <button class="arrow">&lt;</button>
+        <button class="active">1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>4</button>
+        <button>5</button>
+        <button class="arrow">&gt;</button>
+    </div>
+
+
+    <!-- 하단 제목,내용 셀렉트 박스 -->
+    <div class="selection-box2">
+        <select id="category">
+            <option value="all">제목</option>
+            <option value="newIdea">내용</option>
+            <option value="renewal">제목+내용</option>
+        </select>
+    </div>
+
+    <!-- 검색 박스 -->
+    <div class="search-box">
+        <input type="text" id="search">
+        <button onclick="search()">검색</button>
+    </div>
+
+    <div th:replace="/user/common/footer.html"></div>
+    <script th:src="@{/js/board/usGreen/user/usGreenWritePage.js}"></script>
+</body>
+</html>

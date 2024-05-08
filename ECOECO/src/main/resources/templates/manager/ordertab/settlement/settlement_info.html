@@ -1,0 +1,181 @@
+<div th:replace="~{/manager/common/header.html}"></div>
+<div th:replace="~{/manager/common/gnb.html}"></div>
+	
+	<div class="sub_wrap">
+		<aside id="lnb">
+			<ul class="menu">
+				<li><a href="/manager/customer/customer_list">회원 관리</a></li>
+				<li><a href="/manager/project/project_new_list">프로젝트 관리</a></li>
+				<li class="btn_sub on">
+					<a href="#">결제 및 정산 관리</a>
+					<ul class="sub_menu" style="display: block;">
+						<li><a href="/manager/ordertab/order/order_list">주문</a></li>
+						<li><a href="/manager/ordertab/payment/payment_list">결제 현황</a></li>
+						<li class="on"><a href="/manager/ordertab/settlement/settlement_list">정산대기</a></li>
+						<li><a href="/manager/ordertab/refund/refund_list">취소 환불</a></li>
+					</ul>
+				</li>
+				<li><a href="/manager/board/adminNoticeList">게시판관리</a></li>
+
+			</ul>
+		</aside>		
+		<div class="container clearfix">
+			<div class="content">
+
+				<div class="list_tit">
+					<h3>정산정보</h3>
+				</div>
+				<div class="list">
+					<div class="search_wrap">
+						<div class="scrollable">
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">정산번호</th>
+										<th scope="col">프로젝트번호</th>
+										<th scope="col">메이커번호</th>
+										<th scope="col">프로젝트메이커</th>
+										<th scope="col">프로젝트명</th>
+										<th scope="col">정산상태</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+								<tr>
+									<td th:text="${ settlementInfo.settlementNo }"></td>
+									<td th:text="${ settlementInfo.projectNo }"></td>
+									<td th:text="${ settlementInfo.project.makerNo }"></td>
+									<td th:text="${ settlementInfo.maker.makerName }"></td>
+									<td th:text="${ settlementInfo.project.projectName }"></td>
+									<td th:text="${ settlementInfo.settlementStatus }"></td>
+								</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">목표금액</th>
+										<th scope="col">달성금액</th>
+										<th scope="col">달성률</th>
+										<th scope="col">수수료 비율</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+								<tr>
+									<td th:text="${#numbers.formatInteger(settlementInfo.project.targetAmount,1,'COMMA')}"></td>
+									<td th:text="${#numbers.formatInteger(settlementInfo.project.achievedAmount,1,'COMMA')}"></td>
+									<td th:text="${ settlementInfo.achievementRate } + '%'"></td>
+									<td th:utext="${ settlementInfo.project.serviceCharge } + '%'"></td>
+								</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">수수료 금액</th>
+										<th scope="col">정산 예정 금액</th>
+										<th scope="col">프로젝트 종료일</th>
+										<th scope="col">정산은행</th>
+										<th scope="col">정산계좌</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr>
+										<td th:text="${#numbers.formatInteger((settlementInfo.project.achievedAmount * (0.01 * settlementInfo.project.serviceCharge)),1,'COMMA')}"></td>
+										<td th:text="${#numbers.formatInteger(settlementInfo.project.achievedAmount - ( settlementInfo.project.achievedAmount * (0.01 * settlementInfo.project.serviceCharge)),1,'COMMA')}"></td>
+										<td th:text="${ settlementInfo.project.endDate }"></td>
+										<td th:text="${ settlementInfo.userInfo.bankAccount.bankName }"></td>
+										<td th:text="${ settlementInfo.userInfo.userAccount }"></td>
+									</tr>
+								</tbody>
+							</table>
+							<br><br><br>
+							<table class="search_list">
+								<caption>상세보기</caption>
+								<colgroup>
+									<col>
+									<col>
+									<col>
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">정산 일자</th>
+									</tr>
+								</thead>
+								<tbody class="td_bcw">
+									<tr>
+										<td th:text="${#temporals.format(settlementInfo.settlementDate, 'yyyy-MM-dd HH:mm')}"></td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<form id="updateForm" action="/manager/ordertab/settlement/updateSettlement" method="post"></form>
+						<div class="write nshadow">
+							<div class="write_btn align_c mt35">
+								<button class="btn" onclick="history.go(-1)">목록</button>
+								<button class="btn btn_modify" type="button"
+										th:attr="data-settlementNo=${ settlementInfo.settlementNo }, data-type='Y'"
+										onclick="cahngeStatus(this.getAttribute('data-settlementNo'), this.getAttribute('data-type'))">정산 진행
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+	function cahngeStatus(settlementNo, type) {
+
+		if (!confirm("해당 프로젝트의 정산을 진행합니다. \n 진행하시겠습니까?")) {
+		} else {
+			// refundNo를 hidden input에 설정하여 폼 제출
+			let updateForm = document.getElementById('updateForm');
+			// refundNo를 전달할 hidden input 요소 생성
+			let input = document.createElement('input');
+			input.type = 'hidden';
+			input.name = 'settlementNo';
+			input.value = settlementNo;
+			updateForm.appendChild(input);
+
+			// refundStatus를 전달할 hidden input 요소 생성
+			let listTypeInput = document.createElement('input');
+			listTypeInput.type = 'hidden';
+			listTypeInput.name = 'settlementStatus';
+			listTypeInput.value = type;
+			updateForm.appendChild(listTypeInput);
+
+			// 폼 제출
+			updateForm.submit();
+		}
+	}
+</script>
+</body>
+</html>

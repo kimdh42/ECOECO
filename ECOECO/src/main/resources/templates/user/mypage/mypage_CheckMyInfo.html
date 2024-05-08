@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mypage_CheckMyInfo</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <div>
+        <div class="mypageSM" style="float: left; width: 30%; height: 850px;">
+            <!-- 서포터 메이커 마이페이지 이동 버튼-->
+            <div class="toggleButton">
+                <button id="supporterButton" onclick="location.href='/user/mypage/mypageMain'">서포터</button>
+                <button id="makerButton" onclick="location.href='/user/mypage/mypageMain_Maker'">메이커</button>
+            </div>
+
+            <!-- 프로필 사진 -->
+            <form id="profileImageForm" enctype="multipart/form-data" action="/user/mypage/uploadProfileImage" method="post">
+                <div class="profileImg">
+                    <div id="profileImageBox">
+                        <label for="file">
+                            <input type="file" class="file" name="file" id="file" accept="image/*" style="display: none"/><br>
+                            <img id="previewImage" class="inputPreviewImage" src="/images/user/mypage/myPageProfile02.png" alt="프로필 사진 미리보기">
+                            <input type="hidden" name="userNo" th:value="${userInfoDTO.userNo}"/>
+                        </label>
+                    </div>
+                    <div>
+                        <button type="submit" class="changeImageButton" style="cursor: pointer;">변경하기</button>
+                    </div>
+                </div>
+            </form>
+            <!-- 포인트 -->
+            <div class="pointBox">
+                <!--            <input type="text" name="point" id="point" value="여기에 회원 포인트 들어감">-->
+            </div>
+        </div>
+        <!--        float: left;-->
+        <div style="margin-left: 30%; width: 70%; height: 900px;">
+            <div class="myInfo">
+
+                <form id="myInfoForm" action="/user/mypage/updateUserInfo" method="post">
+
+                <h3>내정보 조회</h3>
+                <hr style="float: left; width: 60%;"><br>
+
+                <label id="userName"><strong>이름</strong></label><br>
+                <p style="margin-bottom: 0px;" th:text="${userInfoDTO.userName}"></p>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userId"><strong>아이디</strong></label>
+                <p style="margin-bottom: 0px;" th:text="${userInfoDTO.userId}"></p>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userPwdLabel"><strong>비밀번호</strong></label><br><br>
+                <input type="password" id="userPwd" name="userPwd" value="새로운 비밀번호를 입력하세요">
+                <br>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userPwdLabel2"><strong>비밀번호 확인</strong></label><br><br>
+                <input type="password" id="userPwd2" name="userPwd2" value="새로운 비밀번호를 입력하세요">
+                <br>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userPnumLabel"><strong>전화번호</strong></label>
+                <p><input type="text" id="userPnum" name="userPnum" th:value="${userInfoDTO.userPnum}"></p>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userEmailLabel"><strong>이메일</strong></label>
+                <p><input type="text" id="userEmail" name="userEmail" th:value="${userInfoDTO.userEmail}"></p>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userGenderLabel"><strong>성별</strong></label><br><br>
+                <div id="new_userGender">
+                    <label for="male">남성</label>
+                    <input type="radio" id="male" name="userGender" value="M">
+
+                    <label for="female">여성</label>
+                    <input type="radio" id="female" name="userGender" value="F"><br>
+                </div>
+                <input type="hidden" id="userGender" name="userGender" th:value="${userInfoDTO.userGender}"></input>
+                <hr style="float: left; width: 50%;"><br>
+
+                <label id="userBirthLabel"><strong>생년월일</strong></label><br><br>
+                <div id="new_userBirth">
+                    <select class="birthBox" id="birth-year">
+                        <option disabled selected>년도</option>
+                    </select>
+                    <!-- 월 -->
+                    <select class="birthBox" id="birth-month">
+                        <option disabled selected>월</option>
+                    </select>
+                    <!-- 일 -->
+                    <select class="birthBox" id="birth-day">
+                        <option disabled selected>일</option>
+                    </select>
+                </div>
+                <input type="hidden" id="userBirth" name="userBirth" th:value="${userInfoDTO.userBirth}">
+                <br>
+                <hr style="float: left; width: 50%;"><br>
+
+            </form>
+
+        </div>
+
+        <div id="userinfo_button">
+            <button type="button" class="delete_userinfo" onclick="openDeleteModal()">회원탈퇴</button>
+            <button type="button" class="modify_userinfo" onclick="openSaveModal()">수정하기</button>
+        </div>
+    </div>
+
+        <div id="savemodal" class="modal" style="display: none;">
+            <div class="modal_content">
+                <p>변경 사항을 저장하시겠습니까?</p>
+                <button type="button" id="save_button" onclick="saveChanges()">네</button>
+                <button type="button" id="cancel_button" onclick="closeSaveModal()">아니오</button>
+            </div>
+        </div>
+
+        <div id="deletemodal" class="modal" style="display: none;">
+            <div class="modal_content">
+                <p>정말 탈퇴 하시겠습니까?</p>
+                <button type="button" id="delete_button" onclick="userInfoDeleteButton()">네</button>
+                <button type="button" id="delete_cancel_button" onclick="closeUserInfoDeleteButton()">아니오</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        /* 성별 출력*/
+        // userInfoDTO.userGender 값에 따라 성별 라디오 버튼을 체크합니다.
+        // userInfoDTO.userGender가 'M'이면 'male' 라디오 버튼을 체크하고,
+        // userInfoDTO.userGender가 'F'이면 'female' 라디오 버튼을 체크합니다.
+        window.onload = function() {
+            const userGender = "[[${userInfoDTO.userGender}]]"; // Thymeleaf를 사용하여 서버에서 받아온 값
+            console.log(userGender);
+            if (userGender === 'M') {
+                document.getElementById('male').checked = true;
+            } else if (userGender === 'F') {
+                document.getElementById('female').checked = true;
+            }
+        };
+
+
+        /* 생년월일 출력 */
+        const userBirth = document.getElementById("userBirth").value;
+
+        const [year, month, day] = userBirth.split("-");
+
+        console.log("birthDate : " + userBirth)
+
+        /* 년도(birth-year) 옵션 생성 */
+        const yearSelect = document.getElementById("birth-year");
+        const currentYear = new Date().getFullYear();
+        for(let i = currentYear; i >= currentYear - 100; i-- ) {
+            const option = document.createElement("option");
+            option.text = i;
+            option.value = i;
+            if (i === parseInt(year)) {
+                option.selected = true; // DB에서 가져온 연도와 일치하는 옵션 선택
+            }
+            yearSelect.add(option);
+        }
+
+        /* 월(birth-month) 옵션 생성 */
+        const monthSelect = document.getElementById("birth-month");
+        for(let i = 1; i <= 12; i++) {
+            const option = document.createElement("option");
+            option.text = i < 10 ? "0" + i : i;
+            /* 한자리 숫자는 앞에 0이 붙음 */
+            option.value = i < 10 ? "0" + i : i;
+            if (i === parseInt(month)) {
+                option.selected = true; // DB에서 가져온 월과 일치하는 옵션 선택
+            }
+            monthSelect.add(option);
+        }
+
+        /* 일(birth-day) 옵션 생성 */
+        const daySelect = document.getElementById("birth-day");
+        for(let i = 1; i <= 31; i++) {
+            const option = document.createElement("option");
+            option.text = i;
+            /* 한자리 숫자는 앞에 0이 붙음 */
+            option.value = i < 10 ? "0" + i : i;
+            if (i === parseInt(day)) {
+                option.selected = true; // DB에서 가져온 일과 일치하는 옵션 선택
+            }
+            daySelect.add(option);
+        }
+
+    </script>
+
+</main>
+
+<script type="text/javascript" th:src="@{/js/user/mypage/checkMyInfo.js}"></script>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>settlement_Details</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 850px;">
+        <div>
+            <h2>정산내역 조회</h2>
+            <hr style="text-align: left; margin-left: 0px; width: 90%;"><br>
+        </div>
+
+        <div>
+            <form id="settlement_Info_DetailsForm" action="/user/mypage/settlement_Info_Details">
+                <table id="settlement_Table1">
+                    <tr class="settlement_title">
+                        <th scope="col">정산번호</th>
+                        <th scope="col">프로젝트메이커</th>
+                        <th scope="col">메이커아이디</th>
+                        <th scope="col">프로젝트번호</th>
+                        <th scope="col">정산상태</th>
+                    </tr>
+                    <tr class="settlement_detail" th:if="${settlementDTO != null}">
+                        <td th:text="${settlementDTO.settlementNo}"></td>                <!--settlementNo -->
+                        <td th:text="${settlementDTO.maker.user.userName}"></td>        <!--userName -->
+                        <td th:text="${settlementDTO.maker.user.userId}"></td>          <!--userId -->
+                        <td th:text="${settlementDTO.project.projectNo}"></td>          <!--projectNo -->
+                        <td th:text="${settlementDTO.settlementStatus}"></td>           <!--settlementStatus -->
+                    </tr>
+                </table>
+                <br>
+                <table id="settlement_Table2">
+                    <tr class="settlement_title">
+                        <th scope="col">정산금액</th>
+                        <th scope="col">수수료</th>
+                        <th scope="col">총 정산금액</th>
+                    </tr>
+                    <tr class="settlement_detail" th:if="${settlementDTO != null}">
+                        <td th:text="${settlementDTO.settlementPrice}"></td>            <!--settlementPrice -->
+                        <td th:text="${settlementDTO.project.serviceCharge}"></td>      <!--serviceCharge -->
+                        <td th:text="${settlementDTO.settlementPrice} * (1 - ${settlementDTO.project.serviceCharge}/100)"></td>       <!--settlementPrice*(1-serviceCharge) -->
+                    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

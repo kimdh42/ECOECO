@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>registNewsEdit</title>
+
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/mypage/mypagemain.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}">
+
+</head>
+<body>
+
+<div style="height: 340px; width: 100%;">
+    <header th:replace="/user/common/header"></header>
+</div>
+
+<main style="height: 900px; width: 1440px;">
+    <aside th:replace="/user/mypage/mypage_SideBar"></aside>
+
+    <div style="float: left; width: 70%; height: 850px;">
+        <div class="detailBarBox">
+            <table class="myprojectDetailBar" style="width: 80%; margin-top: 50px;">
+                <tr>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${newsDTO.projectNo}'|">프로젝트정보</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${newsDTO.projectNo}'|">스토리</td>
+                    <td th:onclick="|location.href='/user/mypage/news?projectNo=${newsDTO.projectNo}'|">새소식</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${newsDTO.projectNo}'|">응원/리뷰</td>
+                    <td th:onclick="|location.href='/user/project/detail/detail?projectNo=${newsDTO.projectNo}'|" style="border-right: none;">리워드정보</td>
+                </tr>
+            </table>
+        </div>
+
+        <form id="updateNewsDetail" th:action="|/user/mypage/updateNewsDetail/${newsDTO.newsNo}|" method="post">
+            <div class="registNewsDetailHeadButton" style="margin-top: 30px;">
+                <h2 style="width: 500px; display: inline;">새소식 수정 및 삭제</h2>
+                <hr style="text-align: left; margin-left: 0; width: 90%;"><br>
+            </div>
+
+            <div style="height: 650px;">
+
+                <input type="hidden" name="projectNo" th:value="${newsDTO.project.projectNo}">
+                <input type="hidden" name="newsNo" th:value="${newsDTO.newsNo}">
+                <table class="newsRegist" style="margin-left: 30px;">
+                    <tr>
+                        <td><strong>분류</strong></td>
+                        <td colspan="3" style="text-align: left;">새소식</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>소분류</strong></td>
+                        <td>
+                            <label for="newsCategory"></label>
+                            <select id="newsCategory" name="newsCategory" class="subcategory">
+                                <option value="선택" th:selected="${newsDTO.newsCategory == '선택'}">선택</option>
+                                <option value="리워드안내" th:selected="${newsDTO.newsCategory == '리워드안내'}">리워드안내</option>
+                                <option value="공지사항" th:selected="${newsDTO.newsCategory == '공지사항'}">공지사항</option>
+                                <option value="이벤트" th:selected="${newsDTO.newsCategory == '이벤트'}">이벤트</option>
+                            </select>
+                        </td>
+                        <td><strong>이미지첨부</strong></td>
+                        <td>
+                            <label for="registNewsImage">
+                                <input type="file" id="registNewsImage" style="cursor: pointer; margin-left: 20px;">
+                            </label>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>제목</strong></td>
+                        <td colspan="3" style="text-align: left;"><label for="newsTitle"></label>
+                            <textarea id="newsTitle" name="newsTitle" class="registNewsTextTitle" th:text="${newsDTO.newsTitle}"></textarea></td>
+                    </tr>
+
+                    <tr style="height: 500px;">
+                        <td><strong>내용</strong></td>
+                        <td colspan="3"><label for="newsContent"></label>
+                            <textarea id="newsContent" name="newsContent" class="registNewsTextBox" cols="50" rows="10" th:text="${newsDTO.newsContent}"></textarea></td>
+                    </tr>
+                </table>
+            </div>
+            <button type="submit" id="updateRegistNewsButton" name="updateRegistNewsButton" class="updateRegistNews">수정하기</button>
+        </form>
+        <form id="deleteNewsForm" action="/user/mypage/registNewsDelete" method="post">
+            <input type="hidden" name="projectNo" th:value="${newsDTO.project.projectNo}">
+            <input type="hidden" name="newsNo" th:value="${newsDTO.newsNo}">
+            <button type="button" id="deleteRegistNewsButton" name="deleteRegistNewsButton" class="deleteRegistNews" onclick="openNewsDeleteModal()">삭제하기</button>
+            <!-- 삭제하기 모달창 -->
+            <div id="deleteRegistNewsModal" class="registNewsDeleteModal" style="display: none;">
+                <div class="news_modal_content" style="width: 300px;">
+                    <p>삭제하시겠습니까?</p>
+                    <button id="delete_button" onclick="newsDelete()">네</button>
+                    <button id="delete_cancel_button" onclick="closeNewsSaveModal()">아니오</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+
+<script type="text/javascript" th:src="@{/js/user/mypage/mypage.js}"></script>
+
+<div style="height: 322px; width: 100%;">
+    <footer th:replace="user/common/footer :: footerFragment">
+
+    </footer>
+</div>
+
+</body>
+</html>

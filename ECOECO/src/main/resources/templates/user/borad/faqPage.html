@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ 페이지</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/borad/faqPage.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/header.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/user/common/footer.css}"/>
+    <script th:src="@{/js/main/user/header.js}"></script>
+</head>
+<body>
+<div th:replace="~{/user/common/header::header}"></div>
+
+    <!-- 도움말센터 베너 -->
+    <div class="banner">
+        <p class ="banner_text">일상의 새로운 가능성을 그려가는 곳
+                ECOECO 도움말센터입니다</p>
+        <div class="banner_img">
+            <img src="/images/user/main/faq_page_banner.png" alt="베너이미지"/>
+        </div>
+    </div>
+
+    <!-- 서포터 메이커 버튼 -->
+    <div class="all-box">
+        <a href="/user/borad/supporterFaq">
+            <button type="submit" class="box1">
+                <img class="box1_image" src="/images/user/main/supporter_icon.png" alt="서포터버튼">
+                <p class="box-text">서포터</p>
+            </button>
+        </a>
+        <a href="/user/borad/makerFaq">
+            <button type="submit" class="box2">
+                <img class="box2_image" src="/images/user/main/maker_icon.png" alt="메이커버튼">
+                <p class="box-text">메이커</p>
+            </button>
+        </a>
+    </div>
+    <div th:replace="/user/common/footer.html"></div>
+</body>
+</html>
